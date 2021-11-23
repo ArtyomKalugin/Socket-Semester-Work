@@ -3,6 +3,7 @@ package com.kalugin.view;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.BoundingBox;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -10,16 +11,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 
 public class GameFxApp extends Application {
     private static final int stageWidth = 600;
     private static final int stageHeight = 600;
+    private static ArrayList<Platform> platforms = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception {
         Gamer gamer = new Gamer(0, 0, 50, 50, stageWidth, stageHeight);
+        Platform platform = new Platform(60, 100, 200, 20);
+        platforms.add(platform);
 
-        Scene scene = new Scene(new Pane(gamer), stageWidth, stageHeight);
+        Scene scene = new Scene(new Pane(gamer, platform), stageWidth, stageHeight);
         scene.setOnKeyPressed(gamer);
         stage.setScene(scene);
         stage.show();
@@ -34,14 +40,32 @@ public class GameFxApp extends Application {
         });
     }
 
+    private static class Platform extends Rectangle {
+        private final double width;
+        private final double height;
+
+        public Platform(double x, double y, double width, double height) {
+            super(x, y, width, height);
+
+            this.height = height;
+            this.width = width;
+
+            setFill(Color.GRAY);
+        }
+    }
+
     private static class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         private final double width;
         private final double height;
         private final int stageWidth;
         private final int stageHeight;
-        private boolean right = false;
-        private boolean left = false;
+        private boolean right;
+        private boolean left;
+        private boolean isLeftCollision;
+        private boolean isRightCollision;
+        private boolean isBottomCollision;
         private double gravity = 0;
+        private final int step = 5;
 
         public Gamer(double x, double y, double width, double height, int stageWidth, int stageHeight) {
             super(x, y, width, height);
@@ -50,6 +74,11 @@ public class GameFxApp extends Application {
             this.width = width;
             this.stageWidth = stageWidth;
             this.stageHeight = stageHeight;
+            right = false;
+            left = false;
+            isLeftCollision = false;
+            isRightCollision = false;
+            isBottomCollision = false;
 
             setFill(Color.RED);
         }
@@ -62,19 +91,32 @@ public class GameFxApp extends Application {
             this.left = left;
         }
 
+        private void checkCollision() {
+            BoundingBox rightBox = new BoundingBox(this.getX() + width, this.getY(), 0.1, height - 0.1);
+            BoundingBox leftBox = new BoundingBox(this.getX() - 0.1, this.getY(), 0.1, height - 0.1);
+            BoundingBox bottomBox = new BoundingBox(this.getX(), this.getY() + height, width, 0.1);
+
+            for(Platform platform : platforms) {
+                isRightCollision = rightBox.intersects(platform.getBoundsInParent());
+                isLeftCollision = leftBox.intersects(platform.getBoundsInParent());
+                isBottomCollision = bottomBox.intersects(platform.getBoundsInParent());
+            }
+        }
+
         @Override
         public void handle(KeyEvent event) {
-            int step = 7;
+            checkCollision();
+
             switch (event.getCode()) {
                 case LEFT:
-                    if((this.getX() - step) >= 0){
+                    if(((this.getX() - step) >= 0) && !isLeftCollision){
                         this.setX(this.getX() - step);
                         left = true;
                         right = false;
                     }
                     break;
                 case RIGHT:
-                    if((this.getX() + width) <= stageWidth){
+                    if(((this.getX() + width) <= stageWidth) && !isRightCollision){
                         this.setX(this.getX() + step);
                         left = false;
                         right = true;
@@ -87,8 +129,10 @@ public class GameFxApp extends Application {
                         AnimationTimer jumpTimer = new AnimationTimer() {
                             @Override
                             public void handle(long l) {
-                                gamer.setY(gamer.getY() - 10 + gravity);
-                                gravity += 0.6;
+                                checkCollision();
+                                System.out.println(gamer.getY());
+                                gamer.setY(gamer.getY() - 15 + gravity);
+                                gravity += 1;
 
                                 if(previousY <= gamer.getY()) {
                                     this.stop();
@@ -96,13 +140,13 @@ public class GameFxApp extends Application {
                                 }
 
                                 if(right) {
-                                    if((gamer.getX() + width) <= stageWidth){
+                                    if(((gamer.getX() + width) <= stageWidth) && !isRightCollision){
                                         gamer.setX(gamer.getX() + step);
                                     }
                                 }
 
                                 if(left) {
-                                    if((gamer.getX() - step) >= 0) {
+                                    if(((gamer.getX() - step) >= 0) && !isLeftCollision) {
                                         gamer.setX(gamer.getX() - step);
                                     }
                                 }
@@ -113,7 +157,7 @@ public class GameFxApp extends Application {
                     }
                     break;
                 case DOWN:
-                    if((this.getY() + height + step) <= stageHeight) {
+                    if(((this.getY() + height + step) <= stageHeight) && !isBottomCollision) {
                         this.setY(this.getY() + step);
                     }
                     break;

@@ -64,6 +64,7 @@ public class GameFxApp extends Application {
         private boolean isLeftCollision;
         private boolean isRightCollision;
         private boolean isBottomCollision;
+        private boolean isTopCollision;
         private double gravity = 0;
         private final int step = 5;
 
@@ -91,16 +92,22 @@ public class GameFxApp extends Application {
             this.left = left;
         }
 
-        private void checkCollision() {
+        private Platform checkCollision() {
             BoundingBox rightBox = new BoundingBox(this.getX() + width, this.getY(), 0.1, height - 0.1);
             BoundingBox leftBox = new BoundingBox(this.getX() - 0.1, this.getY(), 0.1, height - 0.1);
             BoundingBox bottomBox = new BoundingBox(this.getX(), this.getY() + height, width, 0.1);
+            BoundingBox topBox = new BoundingBox(this.getX(), this.getY() - 0.1, width, 0.1);
 
             for(Platform platform : platforms) {
                 isRightCollision = rightBox.intersects(platform.getBoundsInParent());
                 isLeftCollision = leftBox.intersects(platform.getBoundsInParent());
                 isBottomCollision = bottomBox.intersects(platform.getBoundsInParent());
+                isTopCollision = topBox.intersects(platform.getBoundsInParent());
+
+                return platform;
             }
+
+            return null;
         }
 
         @Override
@@ -129,10 +136,25 @@ public class GameFxApp extends Application {
                         AnimationTimer jumpTimer = new AnimationTimer() {
                             @Override
                             public void handle(long l) {
-                                checkCollision();
-                                System.out.println(gamer.getY());
                                 gamer.setY(gamer.getY() - 15 + gravity);
                                 gravity += 1;
+
+                                Platform platform = checkCollision();
+
+                                if(gamer.isTopCollision) {
+                                    if(15 > gravity) {
+                                        gravity += 15 - gravity;
+                                    }
+                                }
+
+                                if(gamer.isBottomCollision) {
+                                    this.stop();
+                                    gravity = 0;
+
+                                    if(platform != null) {
+                                        gamer.setY(platform.getY() - gamer.getHeight());
+                                    }
+                                }
 
                                 if(previousY <= gamer.getY()) {
                                     this.stop();

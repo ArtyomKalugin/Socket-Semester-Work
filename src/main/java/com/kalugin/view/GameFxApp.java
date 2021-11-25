@@ -22,7 +22,8 @@ public class GameFxApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Gamer gamer = new Gamer(0, 0, 50, 50, stageWidth, stageHeight);
-        Platform platform = new Platform(60, 100, 200, 20);
+        Platform platform = new Platform(60, 100, 200, 20, true);
+
         platforms.add(platform);
 
         Scene scene = new Scene(new Pane(gamer, platform), stageWidth, stageHeight);
@@ -44,13 +45,15 @@ public class GameFxApp extends Application {
         private final double width;
         private final double height;
 
-        public Platform(double x, double y, double width, double height) {
+        public Platform(double x, double y, double width, double height, boolean isFilled) {
             super(x, y, width, height);
 
             this.height = height;
             this.width = width;
 
-            setFill(Color.GRAY);
+            if(isFilled) {
+                setFill(Color.GRAY);
+            }
         }
     }
 
@@ -82,6 +85,17 @@ public class GameFxApp extends Application {
             isBottomCollision = false;
 
             setFill(Color.RED);
+
+            Gamer gamer = this;
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long l) {
+                    if(((gamer.getY() + height + step) <= stageHeight) && !gamer.isBottomCollision){
+                        gamer.setY(gamer.getY() + 5);
+                    }
+                }
+            };
+            animationTimer.start();
         }
 
         public void setRight(boolean right) {

@@ -15,18 +15,25 @@ import java.util.ArrayList;
 
 
 public class GameFxApp extends Application {
-    private static final int stageWidth = 600;
-    private static final int stageHeight = 600;
+    private static final int stageWidth = 1200;
+    private static final int stageHeight = 1200;
     private static ArrayList<Platform> platforms = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception {
+        Platform platform1 = new Platform(80, 650, 200, 20, true);
+        Platform platform2 = new Platform(800, 650, 200, 20, true);
+        Platform platform3 = new Platform(350, 540, 500, 20, true);
+        Platform grass = new Platform(0, 745, stageWidth, 20, true);
+
         Gamer gamer = new Gamer(0, 0, 50, 50, stageWidth, stageHeight);
-        Platform platform = new Platform(60, 100, 200, 20, true);
 
-        platforms.add(platform);
+        platforms.add(platform1);
+        platforms.add(platform2);
+        platforms.add(platform3);
+        platforms.add(grass);
 
-        Scene scene = new Scene(new Pane(gamer, platform), stageWidth, stageHeight);
+        Scene scene = new Scene(new Pane(gamer, platform1, platform2, platform3, grass), stageWidth, stageHeight);
         scene.setOnKeyPressed(gamer);
         stage.setScene(scene);
         stage.show();
@@ -68,8 +75,9 @@ public class GameFxApp extends Application {
         private boolean isRightCollision;
         private boolean isBottomCollision;
         private boolean isTopCollision;
+        private boolean isJumping;
         private double gravity = 0;
-        private final int step = 5;
+        private final int step = 7;
 
         public Gamer(double x, double y, double width, double height, int stageWidth, int stageHeight) {
             super(x, y, width, height);
@@ -90,8 +98,18 @@ public class GameFxApp extends Application {
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long l) {
-                    if(((gamer.getY() + height + step) <= stageHeight) && !gamer.isBottomCollision){
-                        gamer.setY(gamer.getY() + 5);
+                    gamer.checkBottomCollision();
+
+                    if(!gamer.isBottomCollision && !isJumping){
+                        gamer.setY(gamer.getY() + 10);
+                    }
+
+                    if(gamer.isBottomCollision) {
+                        Platform platform = getBottomCollisionPlatform();
+
+                        if(platform != null) {
+                            gamer.setY(platform.getY() - gamer.getHeight());
+                        }
                     }
                 }
             };
@@ -106,19 +124,63 @@ public class GameFxApp extends Application {
             this.left = left;
         }
 
-        private Platform checkCollision() {
+        private void checkRightCollision() {
             BoundingBox rightBox = new BoundingBox(this.getX() + width, this.getY(), 0.1, height - 0.1);
-            BoundingBox leftBox = new BoundingBox(this.getX() - 0.1, this.getY(), 0.1, height - 0.1);
-            BoundingBox bottomBox = new BoundingBox(this.getX(), this.getY() + height, width, 0.1);
-            BoundingBox topBox = new BoundingBox(this.getX(), this.getY() - 0.1, width, 0.1);
 
             for(Platform platform : platforms) {
                 isRightCollision = rightBox.intersects(platform.getBoundsInParent());
+
+                if(isRightCollision) {
+                    break;
+                }
+            }
+        }
+
+        private void checkLeftCollision() {
+            BoundingBox leftBox = new BoundingBox(this.getX() - 0.1, this.getY(), 0.1, height - 0.1);
+
+            for(Platform platform : platforms) {
                 isLeftCollision = leftBox.intersects(platform.getBoundsInParent());
+
+                if(isLeftCollision) {
+                    break;
+                }
+            }
+        }
+
+        private void checkBottomCollision() {
+            BoundingBox bottomBox = new BoundingBox(this.getX(), this.getY() + height, width, 0.1);
+
+            for(Platform platform : platforms) {
                 isBottomCollision = bottomBox.intersects(platform.getBoundsInParent());
+
+                if(isBottomCollision) {
+                    break;
+                }
+            }
+        }
+
+        private void checkTopCollision() {
+            BoundingBox topBox = new BoundingBox(this.getX(), this.getY() - 0.1, width, 0.1);
+
+            for(Platform platform : platforms) {
                 isTopCollision = topBox.intersects(platform.getBoundsInParent());
 
-                return platform;
+                if(isTopCollision) {
+                    break;
+                }
+            }
+        }
+
+        private Platform getBottomCollisionPlatform() {
+            BoundingBox bottomBox = new BoundingBox(this.getX(), this.getY() + height, width, 0.1);
+
+            for(Platform platform : platforms) {
+                isBottomCollision = bottomBox.intersects(platform.getBoundsInParent());
+
+                if(isBottomCollision) {
+                    return platform;
+                }
             }
 
             return null;
@@ -126,10 +188,9 @@ public class GameFxApp extends Application {
 
         @Override
         public void handle(KeyEvent event) {
-            checkCollision();
-
             switch (event.getCode()) {
                 case LEFT:
+                    checkLeftCollision();
                     if(((this.getX() - step) >= 0) && !isLeftCollision){
                         this.setX(this.getX() - step);
                         left = true;
@@ -137,6 +198,7 @@ public class GameFxApp extends Application {
                     }
                     break;
                 case RIGHT:
+                    checkRightCollision();
                     if(((this.getX() + width) <= stageWidth) && !isRightCollision){
                         this.setX(this.getX() + step);
                         left = false;
@@ -150,20 +212,31 @@ public class GameFxApp extends Application {
                         AnimationTimer jumpTimer = new AnimationTimer() {
                             @Override
                             public void handle(long l) {
-                                gamer.setY(gamer.getY() - 15 + gravity);
-                                gravity += 1;
+                                checkBottomCollision();
+                                if(gamer.isBottomCollision && gravity == 0) {
+                                    isJumping = true;
+                                } else if(!gamer.isBottomCollision && gravity == 0) {
+                                    isJumping = false;
+                                }
 
-                                Platform platform = checkCollision();
+                                if(isJumping) {
+                                    gamer.setY(gamer.getY() - 15 + gravity);
+                                    gravity += 1;
+                                }
 
+                                Platform platform = getBottomCollisionPlatform();
+                                checkTopCollision();
                                 if(gamer.isTopCollision) {
                                     if(15 > gravity) {
                                         gravity += 15 - gravity;
                                     }
                                 }
 
+                                checkBottomCollision();
                                 if(gamer.isBottomCollision) {
                                     this.stop();
                                     gravity = 0;
+                                    isJumping = false;
 
                                     if(platform != null) {
                                         gamer.setY(platform.getY() - gamer.getHeight());
@@ -173,14 +246,17 @@ public class GameFxApp extends Application {
                                 if(previousY <= gamer.getY()) {
                                     this.stop();
                                     gravity = 0;
+                                    isJumping = false;
                                 }
 
+                                checkRightCollision();
                                 if(right) {
                                     if(((gamer.getX() + width) <= stageWidth) && !isRightCollision){
                                         gamer.setX(gamer.getX() + step);
                                     }
                                 }
 
+                                checkLeftCollision();
                                 if(left) {
                                     if(((gamer.getX() - step) >= 0) && !isLeftCollision) {
                                         gamer.setX(gamer.getX() - step);
@@ -193,6 +269,7 @@ public class GameFxApp extends Application {
                     }
                     break;
                 case DOWN:
+                    checkBottomCollision();
                     if(((this.getY() + height + step) <= stageHeight) && !isBottomCollision) {
                         this.setY(this.getY() + step);
                     }

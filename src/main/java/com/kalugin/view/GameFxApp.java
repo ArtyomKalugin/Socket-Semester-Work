@@ -16,8 +16,9 @@ import java.util.ArrayList;
 
 public class GameFxApp extends Application {
     private static final int stageWidth = 1200;
-    private static final int stageHeight = 1200;
+    private static final int stageHeight = 900;
     private static ArrayList<Platform> platforms = new ArrayList<>();
+    private static Pane pane = new Pane();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -33,19 +34,25 @@ public class GameFxApp extends Application {
         platforms.add(platform3);
         platforms.add(grass);
 
-        Scene scene = new Scene(new Pane(gamer, platform1, platform2, platform3, grass), stageWidth, stageHeight);
+        pane.getChildren().add(gamer);
+        pane.getChildren().add(platform1);
+        pane.getChildren().add(platform2);
+        pane.getChildren().add(platform3);
+        pane.getChildren().add(grass);
+
+        Scene scene = new Scene(pane, stageWidth, stageHeight);
         scene.setOnKeyPressed(gamer);
         stage.setScene(scene);
         stage.show();
 
-        scene.setOnKeyReleased(keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case LEFT:
-                    gamer.setLeft(false);
-                case RIGHT:
-                    gamer.setRight(false);
-            }
-        });
+//        scene.setOnKeyReleased(keyEvent -> {
+//            switch (keyEvent.getCode()) {
+//                case LEFT:
+//                    gamer.setLeft(false);
+//                case RIGHT:
+//                    gamer.setRight(false);
+//            }
+//        });
     }
 
     private static class Platform extends Rectangle {
@@ -61,6 +68,49 @@ public class GameFxApp extends Application {
             if(isFilled) {
                 setFill(Color.GRAY);
             }
+        }
+    }
+
+    private static class Bullet extends Rectangle {
+        private final static double width = 30;
+        private final static double height = 10;
+        private final boolean isRight;
+
+        public Bullet(double x, double y, boolean isRight) {
+            super(x, y, width, height);
+            setFill(Color.YELLOW);
+            this.isRight = isRight;
+
+            Bullet bullet = this;
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long l) {
+                    for(Platform platform : platforms) {
+                        if(bullet.getBoundsInParent().intersects(platform.getBoundsInParent())) {
+                            this.stop();
+                            pane.getChildren().remove(bullet);
+                        }
+                    }
+
+                    if(isRight) {
+                        if(getX() <= stageWidth) {
+                            setX(getX() + 15);
+                        } else {
+                            this.stop();
+                            pane.getChildren().remove(bullet);
+                        }
+                    } else {
+                        if(getX() >= 0) {
+                            setX(getX() - 15);
+                        } else {
+                            this.stop();
+                            pane.getChildren().remove(bullet);
+                        }
+                    }
+                }
+            };
+
+            animationTimer.start();
         }
     }
 
@@ -94,21 +144,20 @@ public class GameFxApp extends Application {
 
             setFill(Color.RED);
 
-            Gamer gamer = this;
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long l) {
-                    gamer.checkBottomCollision();
+                    checkBottomCollision();
 
-                    if(!gamer.isBottomCollision && !isJumping){
-                        gamer.setY(gamer.getY() + 10);
+                    if(!isBottomCollision && !isJumping){
+                        setY(getY() + 10);
                     }
 
-                    if(gamer.isBottomCollision) {
+                    if(isBottomCollision) {
                         Platform platform = getBottomCollisionPlatform();
 
                         if(platform != null) {
-                            gamer.setY(platform.getY() - gamer.getHeight());
+                            setY(platform.getY() - getHeight());
                         }
                     }
                 }
@@ -189,6 +238,17 @@ public class GameFxApp extends Application {
         @Override
         public void handle(KeyEvent event) {
             switch (event.getCode()) {
+                case SPACE:
+                    Bullet bullet;
+
+                    if(right) {
+                        bullet = new Bullet(getX() + width, getY() + (height / 2), true);
+                    } else {
+                        bullet = new Bullet(getX(), getY() + (height / 2), false);
+                    }
+                    pane.getChildren().add(bullet);
+                    break;
+
                 case LEFT:
                     checkLeftCollision();
                     if(((this.getX() - step) >= 0) && !isLeftCollision){
@@ -208,42 +268,41 @@ public class GameFxApp extends Application {
                 case UP:
                     if(gravity == 0) {
                         double previousY = this.getY();
-                        Gamer gamer = this;
                         AnimationTimer jumpTimer = new AnimationTimer() {
                             @Override
                             public void handle(long l) {
                                 checkBottomCollision();
-                                if(gamer.isBottomCollision && gravity == 0) {
+                                if(isBottomCollision && gravity == 0) {
                                     isJumping = true;
-                                } else if(!gamer.isBottomCollision && gravity == 0) {
+                                } else if(!isBottomCollision && gravity == 0) {
                                     isJumping = false;
                                 }
 
                                 if(isJumping) {
-                                    gamer.setY(gamer.getY() - 15 + gravity);
+                                    setY(getY() - 15 + gravity);
                                     gravity += 1;
                                 }
 
                                 Platform platform = getBottomCollisionPlatform();
                                 checkTopCollision();
-                                if(gamer.isTopCollision) {
+                                if(isTopCollision) {
                                     if(15 > gravity) {
                                         gravity += 15 - gravity;
                                     }
                                 }
 
                                 checkBottomCollision();
-                                if(gamer.isBottomCollision) {
+                                if(isBottomCollision) {
                                     this.stop();
                                     gravity = 0;
                                     isJumping = false;
 
                                     if(platform != null) {
-                                        gamer.setY(platform.getY() - gamer.getHeight());
+                                        setY(platform.getY() - getHeight());
                                     }
                                 }
 
-                                if(previousY <= gamer.getY()) {
+                                if(previousY <= getY()) {
                                     this.stop();
                                     gravity = 0;
                                     isJumping = false;
@@ -251,15 +310,15 @@ public class GameFxApp extends Application {
 
                                 checkRightCollision();
                                 if(right) {
-                                    if(((gamer.getX() + width) <= stageWidth) && !isRightCollision){
-                                        gamer.setX(gamer.getX() + step);
+                                    if(((getX() + width) <= stageWidth) && !isRightCollision){
+                                        setX(getX() + step);
                                     }
                                 }
 
                                 checkLeftCollision();
                                 if(left) {
-                                    if(((gamer.getX() - step) >= 0) && !isLeftCollision) {
-                                        gamer.setX(gamer.getX() - step);
+                                    if(((getX() - step) >= 0) && !isLeftCollision) {
+                                        setX(getX() - step);
                                     }
                                 }
                             }
@@ -268,12 +327,12 @@ public class GameFxApp extends Application {
                         jumpTimer.start();
                     }
                     break;
-                case DOWN:
-                    checkBottomCollision();
-                    if(((this.getY() + height + step) <= stageHeight) && !isBottomCollision) {
-                        this.setY(this.getY() + step);
-                    }
-                    break;
+//                case DOWN:
+//                    checkBottomCollision();
+//                    if(((this.getY() + height + step) <= stageHeight) && !isBottomCollision) {
+//                        this.setY(this.getY() + step);
+//                    }
+//                    break;
             }
         }
     }

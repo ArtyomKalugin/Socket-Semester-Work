@@ -18,9 +18,10 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private boolean isTopCollision;
     private boolean isJumping;
     private double gravity = 0;
-    private final int step = 7;
+    private final int step = 9;
     private final GameMap map = GameMap.getInstance();
     private boolean isMoving;
+    private boolean canShoot;
 
     public Gamer(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -30,6 +31,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         isRightCollision = false;
         isBottomCollision = false;
         isMoving = false;
+        canShoot = true;
 
         setFill(Color.RED);
 
@@ -186,49 +188,99 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         }
     }
 
+    private void moveToLeft() {
+        final int[] distance = {0};
+        AnimationTimer move = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                if(distance[0] <= step) {
+                    checkLeftCollision();
+
+                    if(((getX() - step) >= 0) && !isLeftCollision){
+                        setX(getX() - 1);
+                        setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    } else {
+                        stop();
+                    }
+                } else {
+                    stop();
+                }
+
+                distance[0] += 1;
+            }
+        };
+
+        move.start();
+    }
+
+    private void moveToRight() {
+        final int[] distance = {0};
+        AnimationTimer move = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                if(distance[0] <= step) {
+                    checkRightCollision();
+
+                    if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
+                        setX(getX() + 1);
+                        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                    } else {
+                        stop();
+                    }
+                } else {
+                    stop();
+                }
+
+                distance[0] += 1;
+            }
+        };
+
+        move.start();
+    }
+
+    private void shoot() {
+        if(canShoot) {
+            canShoot = false;
+            Bullet bullet;
+
+            if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
+                bullet = new Bullet(getX() + width, getY() + (height / 2), true);
+            } else {
+                bullet = new Bullet(getX(), getY() + (height / 2), false);
+            }
+            map.getPane().getChildren().add(bullet);
+        }
+    }
+
     private void handleKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
             case SPACE:
-                Bullet bullet;
-
-                if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-                    bullet = new Bullet(getX() + width, getY() + (height / 2), true);
-                } else {
-                    bullet = new Bullet(getX(), getY() + (height / 2), false);
-                }
-                map.getPane().getChildren().add(bullet);
+                shoot();
                 break;
-
             case LEFT:
-                checkLeftCollision();
-                if(((this.getX() - step) >= 0) && !isLeftCollision){
-                    this.setX(this.getX() - step);
-                    setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    isMoving = true;
-                }
+                isMoving = true;
+                moveToLeft();
                 break;
             case RIGHT:
-                checkRightCollision();
-                if(((this.getX() + width) <= map.getStageWidth()) && !isRightCollision){
-                    this.setX(this.getX() + step);
-                    setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                    isMoving = true;
-                }
+                isMoving = true;
+                moveToRight();
                 break;
             case UP:
                 jump();
                 break;
-//                case DOWN:
-//                    checkBottomCollision();
-//                    if(((this.getY() + height + step) <= stageHeight) && !isBottomCollision) {
-//                        this.setY(this.getY() + step);
-//                    }
-//                    break;
         }
     }
 
-    private void handleKeyReleased() {
-        isMoving = false;
+    private void handleKeyReleased(KeyEvent event) {
+        switch (event.getCode()) {
+            case SPACE:
+                canShoot = true;
+                break;
+            case LEFT:
+            case RIGHT:
+                isMoving = false;
+                break;
+        }
     }
 
     @Override
@@ -236,7 +288,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         if(event.getEventType().getName().equals("KEY_PRESSED")){
             handleKeyPressed(event);
         } else if(event.getEventType().getName().equals("KEY_RELEASED")) {
-            handleKeyReleased();
+            handleKeyReleased(event);
         }
     }
 }

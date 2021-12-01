@@ -1,5 +1,6 @@
 package com.kalugin.view;
 
+import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
 import com.kalugin.view.model.Platform;
 import javafx.scene.layout.Pane;
@@ -10,6 +11,8 @@ public class GameMap {
     private final int stageWidth = 1200;
     private final int stageHeight = 900;
     private ArrayList<Platform> platforms = new ArrayList<>();
+    private ArrayList<Gamer> gamers = new ArrayList<>();
+    private ArrayList<Bot> bots = new ArrayList<>();
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
 
@@ -52,10 +55,33 @@ public class GameMap {
 
     public void setGamer(Gamer gamer) {
         pane.getChildren().add(gamer);
+        gamers.add(gamer);
+    }
+
+    public void setBot(Bot bot) {
+        pane.getChildren().add(bot);
+        bots.add(bot);
+    }
+
+    public void deleteBot(Bot bot) {
+        pane.getChildren().remove(bot);
+        bots.remove(bot);
+    }
+
+    public void deleteGamer(Gamer gamer) {
+        pane.getChildren().remove(gamer);
+        gamers.remove(gamer);
     }
 
     public static GameMap getInstance() {
         return gameMap;
     }
 
+    public ArrayList<Gamer> getGamers() {
+        return gamers;
+    }
+
+    public ArrayList<Bot> getBots() {
+        return bots;
+    }
 }

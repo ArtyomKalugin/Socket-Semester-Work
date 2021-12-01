@@ -22,6 +22,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final GameMap map = GameMap.getInstance();
     private boolean isMoving;
     private boolean canShoot;
+    private double hp;
 
     public Gamer(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -32,8 +33,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         isBottomCollision = false;
         isMoving = false;
         canShoot = true;
+        hp = 100;
 
-        setFill(Color.RED);
+        setFill(Color.BLACK);
 
         AnimationTimer animationTimer = new AnimationTimer() {
             @Override
@@ -238,15 +240,25 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         move.start();
     }
 
+    public void getDamage(double damage) {
+        hp -= damage;
+
+        setFill(Color.RED);
+
+        if(hp <= 0) {
+            map.deleteGamer(this);
+        }
+    }
+
     private void shoot() {
         if(canShoot) {
             canShoot = false;
             Bullet bullet;
 
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-                bullet = new Bullet(getX() + width, getY() + (height / 2), true);
+                bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true);
             } else {
-                bullet = new Bullet(getX(), getY() + (height / 2), false);
+                bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false);
             }
             map.getPane().getChildren().add(bullet);
         }

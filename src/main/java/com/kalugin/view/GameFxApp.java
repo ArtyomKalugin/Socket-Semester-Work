@@ -1,5 +1,6 @@
 package com.kalugin.view;
 
+import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,7 +13,9 @@ public class GameFxApp extends Application {
     public void start(Stage stage) {
         GameMap map = GameMap.getInstance();
         Gamer gamer = new Gamer(0, 0, 50, 50);
+        Bot bot = new Bot(0, 0, 50, 50);
         map.setGamer(gamer);
+        map.setBot(bot);
 
         Scene scene = new Scene(map.getPane(), map.getStageWidth(), map.getStageHeight());
 

@@ -6,6 +6,7 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 
 public class Bot extends Rectangle {
@@ -17,8 +18,9 @@ public class Bot extends Rectangle {
     private boolean isTopCollision;
     private final GameMap map = GameMap.getInstance();
     private double hp;
+    private Text hpLabel;
 
-    public Bot(double x, double y, double width, double height) {
+    public Bot(double x, double y, double width, double height, Text hpLabel) {
         super(x, y, width, height);
         this.height = height;
         this.width = width;
@@ -26,6 +28,7 @@ public class Bot extends Rectangle {
         isRightCollision = false;
         isBottomCollision = false;
         hp = 100;
+        this.hpLabel = hpLabel;
 
         setFill(Color.BLACK);
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -46,6 +49,9 @@ public class Bot extends Rectangle {
                         setY(platform.getY() - getHeight());
                     }
                 }
+
+                hpLabel.setX(getX());
+                hpLabel.setY(getY());
             }
         };
         animationTimer.start();
@@ -78,11 +84,13 @@ public class Bot extends Rectangle {
 
     public void getDamage(double damage) {
         hp -= damage;
+        hpLabel.setText(String.valueOf(hp));
         setFill(Color.RED);
         shoot();
 
         if(hp <= 0) {
             map.deleteBot(this);
+            hpLabel.setText("");
         }
     }
 

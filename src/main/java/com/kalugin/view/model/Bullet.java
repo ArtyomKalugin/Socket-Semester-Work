@@ -28,7 +28,7 @@ public class Bullet extends Rectangle {
                 }
 
                 for(Bot bot : map.getBots()) {
-                    if(bullet.getBoundsInParent().intersects(bot.getBoundsInParent())) {
+                    if(bot != null && bullet.getBoundsInParent().intersects(bot.getBoundsInParent())) {
                         bot.getDamage(10);
                         map.getPane().getChildren().remove(bullet);
                         this.stop();
@@ -36,7 +36,7 @@ public class Bullet extends Rectangle {
                 }
 
                 for(Gamer gamer : map.getGamers()) {
-                    if(bullet.getBoundsInParent().intersects(gamer.getBoundsInParent())) {
+                    if(gamer != null && bullet.getBoundsInParent().intersects(gamer.getBoundsInParent())) {
                         gamer.getDamage(10);
                         map.getPane().getChildren().remove(bullet);
                         this.stop();
@@ -45,7 +45,7 @@ public class Bullet extends Rectangle {
 
                 if(isRight) {
                     if(getX() <= map.getStageWidth()) {
-                        setX(getX() + 15);
+                        setX(getX() + 20);
                     } else {
                         map.getPane().getChildren().remove(bullet);
                         this.stop();
@@ -53,7 +53,7 @@ public class Bullet extends Rectangle {
 
                 } else {
                     if(getX() + width >= 0) {
-                        setX(getX() - 15);
+                        setX(getX() - 20);
                     } else {
                         map.getPane().getChildren().remove(bullet);
                         this.stop();

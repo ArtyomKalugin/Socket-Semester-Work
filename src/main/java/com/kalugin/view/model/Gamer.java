@@ -8,6 +8,7 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final double width;
@@ -23,8 +24,10 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private boolean isMoving;
     private boolean canShoot;
     private double hp;
+    private boolean isDead;
+    private Text hpLabel;
 
-    public Gamer(double x, double y, double width, double height) {
+    public Gamer(double x, double y, double width, double height, Text hpLabel) {
         super(x, y, width, height);
         this.height = height;
         this.width = width;
@@ -34,6 +37,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         isMoving = false;
         canShoot = true;
         hp = 100;
+        isDead = false;
+        this.hpLabel = hpLabel;
 
         setFill(Color.BLACK);
 
@@ -53,6 +58,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                         setY(platform.getY() - getHeight());
                     }
                 }
+
+                hpLabel.setX(getX());
+                hpLabel.setY(getY() - 5);
             }
         };
         animationTimer.start();
@@ -183,6 +191,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                             setX(getX() - step);
                         }
                     }
+
+                    hpLabel.setX(getX());
+                    hpLabel.setY(getY() - 5);
                 }
             };
 
@@ -243,15 +254,18 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     public void getDamage(double damage) {
         hp -= damage;
 
+        hpLabel.setText(String.valueOf(hp));
         setFill(Color.RED);
 
         if(hp <= 0) {
             map.deleteGamer(this);
+            isDead = true;
+            hpLabel.setText("");
         }
     }
 
     private void shoot() {
-        if(canShoot) {
+        if(canShoot && !isDead) {
             canShoot = false;
             Bullet bullet;
 
@@ -272,10 +286,14 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             case LEFT:
                 isMoving = true;
                 moveToLeft();
+                hpLabel.setX(getX());
+                hpLabel.setY(getY() - 5);
                 break;
             case RIGHT:
                 isMoving = true;
                 moveToRight();
+                hpLabel.setX(getX());
+                hpLabel.setY(getY() - 5);
                 break;
             case UP:
                 jump();

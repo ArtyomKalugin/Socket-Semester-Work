@@ -39,7 +39,7 @@ public class Bot extends Rectangle {
                 checkBottomCollision();
 
                 if(!isBottomCollision){
-                    setY(getY() + 10);
+                    setY(getY() + 15);
                 }
 
                 if(isBottomCollision) {

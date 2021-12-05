@@ -48,7 +48,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 checkBottomCollision();
 
                 if(!isBottomCollision && !isJumping){
-                    setY(getY() + 10);
+                    setY(getY() + 15);
                 }
 
                 if(isBottomCollision) {

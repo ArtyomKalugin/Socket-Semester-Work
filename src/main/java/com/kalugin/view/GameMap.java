@@ -4,10 +4,13 @@ import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
 import com.kalugin.view.model.Platform;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class GameMap {
@@ -22,32 +25,24 @@ public class GameMap {
     private Scene scene;
 
     private void configure() {
-        Platform platform1 = new Platform(80, 650, 200, 50);
-        Platform platform2 = new Platform(800, 650, 200, 50);
-        Platform platform3 = new Platform(350, 540, 500, 50);
-        Platform grass = new Platform(0, stageHeight - 50, stageWidth, 50);
-
         Text hpLabel = new Text(0, -5, "100");
         Gamer gamer = new Gamer(0, 0, 50, 50, hpLabel);
         Text hpLabel2 = new Text(0, -5, "100");
         Bot bot = new Bot(0, 0, 50, 50, hpLabel2);
 
-        setGamer(gamer);
-        setBot(bot);
+        Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
+        ImageView backgroundIV = new ImageView(backgroundImg);
+        backgroundIV.setFitHeight(stageHeight);
+        backgroundIV.setFitWidth(stageWidth);
 
-        platforms.add(platform1);
-        platforms.add(platform2);
-        platforms.add(platform3);
-        platforms.add(grass);
-
-        pane.getChildren().add(platform1);
-        pane.getChildren().add(platform2);
-        pane.getChildren().add(platform3);
-        pane.getChildren().add(grass);
+        pane.getChildren().add(backgroundIV);
         pane.getChildren().add(hpLabel);
         pane.getChildren().add(hpLabel2);
 
-       scene = new Scene(pane, stageWidth, stageHeight);
+        setGamer(gamer);
+        setBot(bot);
+
+        scene = new Scene(pane, stageWidth, stageHeight);
 
         for(Gamer g : gamers) {
             scene.setOnKeyPressed(g);
@@ -55,6 +50,7 @@ public class GameMap {
         }
 
         stage.setScene(scene);
+        readMap();
         stage.show();
     }
 
@@ -110,4 +106,40 @@ public class GameMap {
         this.stage = stage;
         configure();
     }
+
+    private void readMap() {
+        try {
+            int i = 0;
+            File map = new File("src/main/resources/map.txt");
+            FileReader fr = new FileReader(map);
+            BufferedReader reader = new BufferedReader(fr);
+            char[][] result = new char[30][15];
+
+            String line = reader.readLine();
+            while (line != null) {
+                char[] objects = line.toCharArray();
+                result[i] = objects;
+                line = reader.readLine();
+                i++;
+            }
+
+            buildMap(result);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void buildMap(char[][] line) {
+        for (int i = 0; i < line.length; i++) {
+            for (int j = 0; j < line[i].length; j++) {
+                if(line[i][j] == '2') {
+                    Platform platform = new Platform(j * 100, (i + 1) * 30, 100, 30);
+                    platforms.add(platform);
+                    pane.getChildren().add(platform);
+                }
+            }
+        }
+    }
+
 }

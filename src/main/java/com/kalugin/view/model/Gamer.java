@@ -1,6 +1,7 @@
 package com.kalugin.view.model;
 
 import com.kalugin.view.GameMap;
+import com.kalugin.view.helper.GamerSpriteAnimation;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
@@ -9,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final double width;
@@ -19,13 +21,14 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private boolean isTopCollision;
     private boolean isJumping;
     private double gravity = 0;
-    private final int step = 9;
+    private final int step = 15;
     private final GameMap map = GameMap.getInstance();
     private boolean isMoving;
     private boolean canShoot;
     private double hp;
     private boolean isDead;
-    private Text hpLabel;
+    private final Text hpLabel;
+    private GamerSpriteAnimation gamerAnimation;
 
     public Gamer(double x, double y, double width, double height, Text hpLabel) {
         super(x, y, width, height);
@@ -40,7 +43,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         isDead = false;
         this.hpLabel = hpLabel;
 
-        setFill(Color.BLACK);
+        setFill(Color.TRANSPARENT);
 
         AnimationTimer animationTimer = new AnimationTimer() {
             @Override
@@ -90,6 +93,10 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 break;
             }
         }
+    }
+
+    public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
+        this.gamerAnimation = gamerAnimation;
     }
 
     private void checkBottomCollision() {
@@ -180,7 +187,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)
                             && isMoving) {
                         if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
-                            setX(getX() + step);
+                            setX(getX() + step - 6);
                         }
                     }
 
@@ -188,7 +195,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     if(getNodeOrientation().equals(NodeOrientation.RIGHT_TO_LEFT)
                             && isMoving) {
                         if(((getX() - step) >= 0) && !isLeftCollision) {
-                            setX(getX() - step);
+                            setX(getX() - step + 6);
                         }
                     }
 
@@ -224,10 +231,15 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         };
 
         move.start();
+        hpLabel.setX(getX());
+        hpLabel.setY(getY() - 5);
     }
 
     private void moveToRight() {
         final int[] distance = {0};
+
+        gamerAnimation.play();
+
         AnimationTimer move = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -236,6 +248,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                     if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
                         setX(getX() + 1);
+                        gamerAnimation.setX(getX());
+                        gamerAnimation.setY(getY() - 44);
                         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
                     } else {
                         stop();
@@ -249,6 +263,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         };
 
         move.start();
+        hpLabel.setX(getX());
+        hpLabel.setY(getY() - 5);
     }
 
     public void getDamage(double damage) {
@@ -270,9 +286,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             Bullet bullet;
 
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-                bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true);
+                bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true, this);
             } else {
-                bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false);
+                bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false, this);
             }
             map.getPane().getChildren().add(bullet);
         }
@@ -286,14 +302,10 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             case LEFT:
                 isMoving = true;
                 moveToLeft();
-                hpLabel.setX(getX());
-                hpLabel.setY(getY() - 5);
                 break;
             case RIGHT:
                 isMoving = true;
                 moveToRight();
-                hpLabel.setX(getX());
-                hpLabel.setY(getY() - 5);
                 break;
             case UP:
                 jump();
@@ -309,6 +321,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             case LEFT:
             case RIGHT:
                 isMoving = false;
+                gamerAnimation.stop();
                 break;
         }
     }

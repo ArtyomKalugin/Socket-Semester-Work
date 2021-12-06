@@ -1,5 +1,6 @@
 package com.kalugin.view;
 
+import com.kalugin.view.helper.GamerSpriteAnimation;
 import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
 import com.kalugin.view.model.Platform;
@@ -9,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -71,6 +73,9 @@ public class GameMap {
     }
 
     public void setGamer(Gamer gamer) {
+        GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
+                53, 94, Duration.millis(450));
+        gamer.setGamerAnimation(gamerAnimation);
         pane.getChildren().add(gamer);
         gamers.add(gamer);
     }

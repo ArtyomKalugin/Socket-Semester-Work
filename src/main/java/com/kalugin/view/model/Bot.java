@@ -61,9 +61,9 @@ public class Bot extends Rectangle {
         Bullet bullet;
 
         if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-            bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true);
+            bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true, null);
         } else {
-            bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false);
+            bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false, null);
         }
         map.getPane().getChildren().add(bullet);
 

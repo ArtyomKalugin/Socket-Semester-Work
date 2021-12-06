@@ -10,11 +10,13 @@ public class Bullet extends Rectangle {
     private final static double height = 10;
     private final boolean isRight;
     private GameMap map = GameMap.getInstance();
+    private Gamer sender;
 
-    public Bullet(double x, double y, boolean isRight) {
+    public Bullet(double x, double y, boolean isRight, Gamer sender) {
         super(x, y, width, height);
         setFill(Color.YELLOW);
         this.isRight = isRight;
+        this.sender = sender;
 
         Bullet bullet = this;
         AnimationTimer animationTimer = new AnimationTimer() {
@@ -36,7 +38,8 @@ public class Bullet extends Rectangle {
                 }
 
                 for(Gamer gamer : map.getGamers()) {
-                    if(gamer != null && bullet.getBoundsInParent().intersects(gamer.getBoundsInParent())) {
+                    if(gamer != null && bullet.getBoundsInParent().intersects(gamer.getBoundsInParent())
+                            && gamer != sender) {
                         gamer.getDamage(10);
                         map.getPane().getChildren().remove(bullet);
                         this.stop();

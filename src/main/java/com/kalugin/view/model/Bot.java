@@ -1,6 +1,7 @@
 package com.kalugin.view.model;
 
 import com.kalugin.view.GameMap;
+import com.kalugin.view.helper.GamerSpriteAnimation;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.NodeOrientation;
@@ -19,6 +20,9 @@ public class Bot extends Rectangle {
     private final GameMap map = GameMap.getInstance();
     private double hp;
     private Text hpLabel;
+    private GamerSpriteAnimation gamerAnimation;
+    private boolean isFallen;
+    private int fallDamage = 0;
 
     public Bot(double x, double y, double width, double height, Text hpLabel) {
         super(x, y, width, height);
@@ -29,8 +33,9 @@ public class Bot extends Rectangle {
         isBottomCollision = false;
         hp = 100;
         this.hpLabel = hpLabel;
+        isFallen = false;
 
-        setFill(Color.BLACK);
+        setFill(Color.TRANSPARENT);
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         AnimationTimer animationTimer = new AnimationTimer() {
@@ -39,7 +44,16 @@ public class Bot extends Rectangle {
                 checkBottomCollision();
 
                 if(!isBottomCollision){
+                    if(!isFallen) {
+                        gamerAnimation.changeTurnToFall(getNodeOrientation());
+                        gamerAnimation.play();
+                        isFallen = true;
+                    }
+
                     setY(getY() + 15);
+                    fallDamage++;
+                    gamerAnimation.setX(getX());
+                    gamerAnimation.setY(getY());
                 }
 
                 if(isBottomCollision) {
@@ -47,6 +61,13 @@ public class Bot extends Rectangle {
 
                     if(platform != null) {
                         setY(platform.getY() - getHeight());
+
+                        if(isFallen) {
+                            isFallen = false;
+                            gamerAnimation.stopAnimation(getNodeOrientation());
+                            getDamage(fallDamage / 10);
+                            fallDamage = 0;
+                        }
                     }
                 }
 
@@ -61,9 +82,9 @@ public class Bot extends Rectangle {
         Bullet bullet;
 
         if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-            bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true, null);
+            bullet = new Bullet(getX() + width + 1, getY() + 30, true, null);
         } else {
-            bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false, null);
+            bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, null);
         }
         map.getPane().getChildren().add(bullet);
 
@@ -85,12 +106,12 @@ public class Bot extends Rectangle {
     public void getDamage(double damage) {
         hp -= damage;
         hpLabel.setText(String.valueOf(hp));
-        setFill(Color.RED);
         shoot();
 
         if(hp <= 0) {
             map.deleteBot(this);
             hpLabel.setText("");
+            gamerAnimation.delete();
         }
     }
 
@@ -146,5 +167,9 @@ public class Bot extends Rectangle {
         }
 
         return null;
+    }
+
+    public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
+        this.gamerAnimation = gamerAnimation;
     }
 }

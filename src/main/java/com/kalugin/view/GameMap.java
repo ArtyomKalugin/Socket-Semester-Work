@@ -28,9 +28,9 @@ public class GameMap {
 
     private void configure() {
         Text hpLabel = new Text(0, -5, "100");
-        Gamer gamer = new Gamer(0, 0, 50, 50, hpLabel);
+        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel);
         Text hpLabel2 = new Text(0, -5, "100");
-        Bot bot = new Bot(0, 0, 50, 50, hpLabel2);
+        Bot bot = new Bot(0, 0, 30, 94, hpLabel2);
 
         Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
         ImageView backgroundIV = new ImageView(backgroundImg);
@@ -54,6 +54,7 @@ public class GameMap {
         stage.setScene(scene);
         readMap();
         stage.show();
+        stage.setFullScreen(true);
     }
 
     public int getStageWidth() {
@@ -74,13 +75,16 @@ public class GameMap {
 
     public void setGamer(Gamer gamer) {
         GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
-                53, 94, Duration.millis(450));
+                53, 94, Duration.millis(380));
         gamer.setGamerAnimation(gamerAnimation);
         pane.getChildren().add(gamer);
         gamers.add(gamer);
     }
 
     public void setBot(Bot bot) {
+        GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
+                53, 94, Duration.millis(380));
+        bot.setGamerAnimation(gamerAnimation);
         pane.getChildren().add(bot);
         bots.add(bot);
     }

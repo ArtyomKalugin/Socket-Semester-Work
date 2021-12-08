@@ -4,6 +4,7 @@ import com.kalugin.view.GameMap;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,12 +14,12 @@ import java.io.File;
 
 public class GamerSpriteAnimation extends Transition {
     private final ImageView imageView;
-    private final int count;
-    private final int columns;
-    private final int offsetX;
-    private final int offsetY;
-    private final int width;
-    private final int height;
+    private int count;
+    private int columns;
+    private int offsetX;
+    private int offsetY;
+    private int width;
+    private int height;
     private final GameMap map = GameMap.getInstance();
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
@@ -41,12 +42,72 @@ public class GamerSpriteAnimation extends Transition {
         map.getPane().getChildren().add(imageView);
     }
 
+    public void changeTurnToRight() {
+        imageView.setViewport(new Rectangle2D(0, 0, 53, 94));
+        width = 53;
+        height = 94;
+        offsetY = 100;
+        offsetX = 53;
+        count = 5;
+        columns = 5;
+    }
+
+    public void changeTurnToLeft() {
+        imageView.setViewport(new Rectangle2D(0, 0, 53, 94));
+        width = 53;
+        height = 94;
+        offsetY = 0;
+        offsetX = 53;
+        count = 5;
+        columns = 5;
+    }
+
+    public void delete() {
+       map.getPane().getChildren().remove(imageView);
+    }
+
+    public void changeTurnToFall(NodeOrientation orientation) {
+        imageView.setViewport(new Rectangle2D(0, 0, 50, 50));
+        width = 43;
+        height = 54;
+        offsetX = 0;
+        count = 4;
+        columns = 4;
+
+        if(orientation.equals(NodeOrientation.RIGHT_TO_LEFT)) {
+            offsetY = 200;
+        } else {
+            offsetY = 250;
+        }
+    }
+
     public void setX(double x) {
         imageView.setX(x);
     }
 
     public void setY(double y) {
         imageView.setY(y);
+    }
+
+    public void stopAnimation(NodeOrientation orientation) {
+        if(orientation.equals(NodeOrientation.RIGHT_TO_LEFT)) {
+            offsetY = 0;
+        } else {
+            offsetY = 100;
+        }
+
+        offsetX = 0;
+        count = 6;
+        columns = 6;
+        width = 53;
+        height = 94;
+
+        int index = Math.min((int) Math.floor(0), count - 1);
+        int x = (index % columns) * width + offsetX;
+        int y = (index / columns) * height + offsetY;
+        imageView.setViewport(new Rectangle2D(x, y, width, height));
+
+        this.stop();
     }
 
     @Override

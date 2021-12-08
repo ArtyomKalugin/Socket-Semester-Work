@@ -10,7 +10,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
+
+import java.util.Random;
 
 public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final double width;
@@ -21,7 +22,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private boolean isTopCollision;
     private boolean isJumping;
     private double gravity = 0;
-    private final int step = 15;
+    private final int step = 10;
     private final GameMap map = GameMap.getInstance();
     private boolean isMoving;
     private boolean canShoot;
@@ -29,6 +30,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private boolean isDead;
     private final Text hpLabel;
     private GamerSpriteAnimation gamerAnimation;
+    private boolean isFallen;
+    private int fallDamage = 0;
 
     public Gamer(double x, double y, double width, double height, Text hpLabel) {
         super(x, y, width, height);
@@ -42,6 +45,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         hp = 100;
         isDead = false;
         this.hpLabel = hpLabel;
+        isFallen = false;
 
         setFill(Color.TRANSPARENT);
 
@@ -51,7 +55,16 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 checkBottomCollision();
 
                 if(!isBottomCollision && !isJumping){
+                    if(!isFallen) {
+                        gamerAnimation.changeTurnToFall(getNodeOrientation());
+                        gamerAnimation.play();
+                        isFallen = true;
+                    }
+
                     setY(getY() + 15);
+                    fallDamage++;
+                    gamerAnimation.setX(getX());
+                    gamerAnimation.setY(getY());
                 }
 
                 if(isBottomCollision) {
@@ -59,6 +72,13 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                     if(platform != null) {
                         setY(platform.getY() - getHeight());
+
+                        if(isFallen) {
+                            isFallen = false;
+                            gamerAnimation.stopAnimation(getNodeOrientation());
+                            getDamage(fallDamage / 10);
+                            fallDamage = 0;
+                        }
                     }
                 }
 
@@ -143,6 +163,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private void jump() {
         if(gravity == 0) {
             double previousY = this.getY();
+            gamerAnimation.changeTurnToFall(getNodeOrientation());
+            gamerAnimation.play();
+
             AnimationTimer jumpTimer = new AnimationTimer() {
                 @Override
                 public void handle(long l) {
@@ -154,8 +177,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     }
 
                     if(isJumping) {
-                        setY(getY() - 15 + gravity);
+                        setY(getY() - 17 + gravity);
                         gravity += 1;
+                        gamerAnimation.setY(getY());
                     }
 
                     Platform platform = getBottomCollisionPlatform();
@@ -171,6 +195,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                         this.stop();
                         gravity = 0;
                         isJumping = false;
+                        gamerAnimation.stopAnimation(getNodeOrientation());
 
                         if(platform != null) {
                             setY(platform.getY() - getHeight());
@@ -179,6 +204,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                     if(previousY <= getY()) {
                         this.stop();
+                        gamerAnimation.stopAnimation(getNodeOrientation());
                         gravity = 0;
                         isJumping = false;
                     }
@@ -187,7 +213,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)
                             && isMoving) {
                         if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
-                            setX(getX() + step - 6);
+                            setX(getX() + step - 4);
+                            gamerAnimation.setX(getX());
                         }
                     }
 
@@ -195,7 +222,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     if(getNodeOrientation().equals(NodeOrientation.RIGHT_TO_LEFT)
                             && isMoving) {
                         if(((getX() - step) >= 0) && !isLeftCollision) {
-                            setX(getX() - step + 6);
+                            setX(getX() - step + 4);
+                            gamerAnimation.setX(getX());
                         }
                     }
 
@@ -210,6 +238,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
     private void moveToLeft() {
         final int[] distance = {0};
+        gamerAnimation.changeTurnToLeft();
+        gamerAnimation.play();
+
         AnimationTimer move = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -218,6 +249,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                     if(((getX() - step) >= 0) && !isLeftCollision){
                         setX(getX() - 1);
+                        gamerAnimation.setX(getX());
+                        gamerAnimation.setY(getY());
                         setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     } else {
                         stop();
@@ -237,7 +270,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
     private void moveToRight() {
         final int[] distance = {0};
-
+        gamerAnimation.changeTurnToRight();
         gamerAnimation.play();
 
         AnimationTimer move = new AnimationTimer() {
@@ -249,7 +282,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
                         setX(getX() + 1);
                         gamerAnimation.setX(getX());
-                        gamerAnimation.setY(getY() - 44);
+                        gamerAnimation.setY(getY());
                         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
                     } else {
                         stop();
@@ -269,14 +302,13 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
     public void getDamage(double damage) {
         hp -= damage;
-
         hpLabel.setText(String.valueOf(hp));
-        setFill(Color.RED);
 
         if(hp <= 0) {
             map.deleteGamer(this);
             isDead = true;
             hpLabel.setText("");
+            gamerAnimation.delete();
         }
     }
 
@@ -286,9 +318,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             Bullet bullet;
 
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-                bullet = new Bullet(getX() + width + 1, getY() + (height / 2), true, this);
+                bullet = new Bullet(getX() + width + 1, getY() + 30, true, this);
             } else {
-                bullet = new Bullet(getX() - 30 - 1, getY() + (height / 2), false, this);
+                bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, this);
             }
             map.getPane().getChildren().add(bullet);
         }
@@ -321,7 +353,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             case LEFT:
             case RIGHT:
                 isMoving = false;
-                gamerAnimation.stop();
+                gamerAnimation.stopAnimation(getNodeOrientation());
                 break;
         }
     }

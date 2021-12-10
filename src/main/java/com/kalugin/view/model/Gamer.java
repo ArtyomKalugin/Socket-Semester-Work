@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import java.util.Random;
 
 public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final double width;
@@ -29,11 +28,12 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private double hp;
     private boolean isDead;
     private final Text hpLabel;
+    private final Text nameLabel;
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;
     private int fallDamage = 0;
 
-    public Gamer(double x, double y, double width, double height, Text hpLabel) {
+    public Gamer(double x, double y, double width, double height, Text hpLabel, Text nameLabel) {
         super(x, y, width, height);
         this.height = height;
         this.width = width;
@@ -46,6 +46,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         isDead = false;
         this.hpLabel = hpLabel;
         isFallen = false;
+        this.nameLabel = nameLabel;
 
         setFill(Color.TRANSPARENT);
 
@@ -84,6 +85,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                 hpLabel.setX(getX());
                 hpLabel.setY(getY() - 5);
+
+                nameLabel.setX(getX());
+                nameLabel.setY(getY() - 20);
             }
         };
         animationTimer.start();
@@ -229,6 +233,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
                     hpLabel.setX(getX());
                     hpLabel.setY(getY() - 5);
+
+                    nameLabel.setX(getX());
+                    nameLabel.setY(getY() - 20);
                 }
             };
 
@@ -266,6 +273,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         move.start();
         hpLabel.setX(getX());
         hpLabel.setY(getY() - 5);
+
+        nameLabel.setX(getX());
+        nameLabel.setY(getY() - 20);
     }
 
     private void moveToRight() {
@@ -298,6 +308,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         move.start();
         hpLabel.setX(getX());
         hpLabel.setY(getY() - 5);
+
+        nameLabel.setX(getX());
+        nameLabel.setY(getY() - 20);
     }
 
     public void getDamage(double damage) {
@@ -308,6 +321,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             map.deleteGamer(this);
             isDead = true;
             hpLabel.setText("");
+            nameLabel.setText("");
             gamerAnimation.delete();
         }
     }

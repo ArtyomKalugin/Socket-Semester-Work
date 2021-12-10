@@ -25,10 +25,12 @@ public class GameMap {
     private static GameMap gameMap = new GameMap();
     private Stage stage;
     private Scene scene;
+    private String name;
 
     private void configure() {
         Text hpLabel = new Text(0, -5, "100");
-        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel);
+        Text nameLabel = new Text(0, -10, name);
+        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
         Text hpLabel2 = new Text(0, -5, "100");
         Bot bot = new Bot(0, 0, 30, 94, hpLabel2);
 
@@ -40,6 +42,7 @@ public class GameMap {
         pane.getChildren().add(backgroundIV);
         pane.getChildren().add(hpLabel);
         pane.getChildren().add(hpLabel2);
+        pane.getChildren().add(nameLabel);
 
         setGamer(gamer);
         setBot(bot);
@@ -71,6 +74,10 @@ public class GameMap {
 
     public Pane getPane() {
         return pane;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setGamer(Gamer gamer) {

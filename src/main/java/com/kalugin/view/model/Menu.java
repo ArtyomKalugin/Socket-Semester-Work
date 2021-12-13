@@ -13,6 +13,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Menu {
     private String title = "Menu";
     private AnchorPane pane = null;
@@ -33,7 +35,11 @@ public class Menu {
         public void handle(ActionEvent event) {
             if (singlePlayer == event.getSource()) {
                 map.setName(nameTextField.getText());
-                map.setStage(stage);
+                try {
+                    map.setStage(stage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };

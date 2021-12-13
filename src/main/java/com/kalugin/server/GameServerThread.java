@@ -1,21 +1,21 @@
-package com.kalugin.view.client;
-
-import com.kalugin.view.GameMap;
+package com.kalugin.server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.SocketException;
 
-public class GameThread implements Runnable {
+public class GameServerThread implements Runnable {
     private final BufferedReader input;
-    private final BufferedWriter output;
-    private final GameClient client;
-    private final GameMap map = GameMap.getInstance();
 
-    public GameThread(BufferedReader input, BufferedWriter output, GameClient client) {
+    private final BufferedWriter output;
+
+    private final GameServer server;
+
+    public GameServerThread(BufferedReader input, BufferedWriter output, GameServer server) {
         this.input = input;
         this.output = output;
-        this.client = client;
+        this.server = server;
     }
 
     public BufferedReader getInput() {
@@ -26,13 +26,20 @@ public class GameThread implements Runnable {
         return output;
     }
 
+    public GameServer getServer() {
+        return server;
+    }
+
+
     @Override
     public void run() {
         try {
             while (true) {
                 String message = input.readLine();
-//                client.getApplication().appendMessageToChat(message);
+                server.sendMessage(message, this);
             }
+        } catch (SocketException socketException) {
+            server.removeClient(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

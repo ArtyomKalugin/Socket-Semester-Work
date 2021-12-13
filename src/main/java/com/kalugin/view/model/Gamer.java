@@ -279,6 +279,10 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     }
 
     private void moveToRight() {
+        String sender = map.getName();
+        String message = "move to right" + "\n";
+        map.getGameClient().sendMessage(sender + " " + message);
+
         final int[] distance = {0};
         gamerAnimation.changeTurnToRight();
         gamerAnimation.play();

@@ -1,5 +1,6 @@
 package com.kalugin.view;
 
+import com.kalugin.client.GameClient;
 import com.kalugin.view.helper.GamerSpriteAnimation;
 import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
@@ -26,8 +27,12 @@ public class GameMap {
     private Stage stage;
     private Scene scene;
     private String name;
+    private GameClient gameClient;
 
-    private void configure() {
+    private void configure() throws IOException {
+        gameClient = new GameClient();
+        gameClient.start();
+
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, name);
         Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
@@ -118,7 +123,7 @@ public class GameMap {
         return bots;
     }
 
-    public void setStage(Stage stage) {
+    public void setStage(Stage stage) throws IOException {
         this.stage = stage;
         configure();
     }
@@ -158,4 +163,19 @@ public class GameMap {
         }
     }
 
+    public GameClient getGameClient() {
+        return gameClient;
+    }
+
+    public void setGameClient(GameClient gameClient) {
+        this.gameClient = gameClient;
+    }
+
+    public void startGameClient() throws IOException {
+        getGameClient().start();
+    }
+
+    public String getName() {
+        return name;
+    }
 }

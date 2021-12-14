@@ -30,6 +30,7 @@ public class GameServer {
     }
 
     public void sendMessage(String message, GameServerThread sender) throws IOException {
+        System.out.println(message);
         for (GameServerThread client : clients) {
             if (client.equals(sender)){
                 continue;

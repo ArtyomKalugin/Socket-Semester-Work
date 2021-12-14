@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameMap {
     private final int stageWidth = 1450;
@@ -27,7 +28,7 @@ public class GameMap {
     private ArrayList<Platform> platforms = new ArrayList<>();
     private ArrayList<Gamer> gamers = new ArrayList<>();
     private ArrayList<Bot> bots = new ArrayList<>();
-    private List<Opp> opps = Collections.synchronizedList(new ArrayList<>());
+    private CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
     private Stage stage;
@@ -246,8 +247,11 @@ public class GameMap {
 
         for (Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
-                opp.setX(x);
-                opp.setY(y);
+                javafx.application.Platform.runLater(() -> {
+                    opp.setX(x);
+                    opp.setY(y);
+                });
+                
                 isFound = true;
             }
         }

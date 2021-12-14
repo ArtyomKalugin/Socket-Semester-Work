@@ -227,10 +227,12 @@ public class GameMap {
         hpLabel.setFont(font);
         Opp opp = new Opp(hpLabel, nameLabel, oppName);
 
-        opps.add(opp);
-        pane.getChildren().add(opp);
-        pane.getChildren().add(hpLabel);
-        pane.getChildren().add(nameLabel);
+        javafx.application.Platform.runLater(() -> {
+            opps.add(opp);
+            pane.getChildren().add(opp);
+            pane.getChildren().add(hpLabel);
+            pane.getChildren().add(nameLabel);
+        });
     }
 
     public GameClient getGameClient() {
@@ -264,5 +266,9 @@ public class GameMap {
 
     public String getName() {
         return name;
+    }
+
+    public ArrayList<Opp> getOpps() {
+        return opps;
     }
 }

@@ -1,7 +1,6 @@
 package com.kalugin.client;
 
 import com.kalugin.view.GameMap;
-import com.kalugin.client.GameClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -11,8 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-
 
 public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private final double width;
@@ -34,7 +32,6 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;
     private int fallDamage = 0;
-    private ArrayList<Opp> opps = new ArrayList<>();
 
     public Gamer(double x, double y, double width, double height, Text hpLabel, Text nameLabel) {
         super(x, y, width, height);
@@ -92,7 +89,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 nameLabel.setX(getX());
                 nameLabel.setY(getY() - 20);
 
-                String message = "fall " + getX() + " " + getY() + "\n";
+                String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
                 map.getGameClient().sendMessage(message);
             }
         };
@@ -243,7 +240,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     nameLabel.setX(getX());
                     nameLabel.setY(getY() - 20);
 
-                    String message = "jump " + getX() + " " + getY() + "\n";
+                    String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
                     map.getGameClient().sendMessage(message);
                 }
             };
@@ -286,7 +283,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "left " + getX() + " " + getY() + "\n";
+        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
         map.getGameClient().sendMessage(message);
     }
 
@@ -324,7 +321,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "right " + getX() + " " + getY() + "\n";
+        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
         map.getGameClient().sendMessage(message);
     }
 
@@ -399,9 +396,5 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
     public String getName() {
         return nameLabel.getText();
-    }
-
-    public void addOpp(Opp opp) {
-        opps.add(opp);
     }
 }

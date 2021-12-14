@@ -26,6 +26,10 @@ public class Opp extends Rectangle {
         setFill(Color.BLACK);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
         this.gamerAnimation = gamerAnimation;
     }

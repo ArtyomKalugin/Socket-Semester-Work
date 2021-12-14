@@ -12,13 +12,11 @@ public class GameClientThread implements Runnable{
     private final BufferedWriter output;
     private final GameClient client;
     private final GameMap map = GameMap.getInstance();
-    private String name;
 
-    public GameClientThread(BufferedReader input, BufferedWriter output, GameClient client, String name) {
+    public GameClientThread(BufferedReader input, BufferedWriter output, GameClient client) {
         this.input = input;
         this.output = output;
         this.client = client;
-        this.name = name;
     }
 
     public BufferedReader getInput() {
@@ -34,14 +32,21 @@ public class GameClientThread implements Runnable{
         try {
             while (true) {
                 String message = input.readLine();
+                System.out.println(message);
 
                 if(message != null) {
                     String[] directions = message.split(" ");
 
                     if(directions[0].equals("new")) {
-                        map.addOpp(name, directions[1]);
+                        map.createNewOpp(directions[1]);
                     }
 
+                    if (directions[0].equals("move")) {
+                        double x = Double.parseDouble(directions[2]);
+                        double y = Double.parseDouble(directions[3]);
+
+                        map.moveOpp(directions[1], x, y);
+                    }
                 }
             }
         } catch (IOException e) {

@@ -25,6 +25,7 @@ public class GameMap {
     private ArrayList<Platform> platforms = new ArrayList<>();
     private ArrayList<Gamer> gamers = new ArrayList<>();
     private ArrayList<Bot> bots = new ArrayList<>();
+    private ArrayList<Opp> opps = new ArrayList<>();
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
     private Stage stage;
@@ -35,7 +36,7 @@ public class GameMap {
 
 
     private void configureMultiPlayer() throws IOException {
-        gameClient = new GameClient(name);
+        gameClient = new GameClient();
         gameClient.start();
 
         Text hpLabel = new Text(0, -5, "100");
@@ -43,7 +44,6 @@ public class GameMap {
         nameLabel.setFont(font);
         hpLabel.setFont(font);
         Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
-        checkOpps(gamer);
 
         Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
         ImageView backgroundIV = new ImageView(backgroundImg);
@@ -73,7 +73,7 @@ public class GameMap {
     }
 
     private void configureSinglePlayer() throws IOException {
-        gameClient = new GameClient(name);
+        gameClient = new GameClient();
         gameClient.start();
 
         Text hpLabel = new Text(0, -5, "100");
@@ -220,44 +220,38 @@ public class GameMap {
         }
     }
 
-    public void addOpp(String senderName, String oppName) {
-        for (Gamer gamer : gamers) {
-            if (gamer.getName().equals(senderName)) {
-                for (Gamer opp : gamers) {
-                    if (opp.getName().equals(oppName)) {
-                        gamer.addOpp(createNewOpp(oppName));
-                    }
-                }
-            }
-        }
-    }
-
-    public void checkOpps(Gamer sender) {
-        for (Gamer gamer : gamers) {
-            if (gamer.equals(sender)) {
-                continue;
-            }
-
-            sender.addOpp(createNewOpp(gamer.getName()));
-        }
-    }
-
-    private Opp createNewOpp(String oppName) {
+    public void createNewOpp(String oppName) {
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, oppName);
         nameLabel.setFont(font);
         hpLabel.setFont(font);
-
         Opp opp = new Opp(hpLabel, nameLabel, oppName);
+
+        opps.add(opp);
         pane.getChildren().add(opp);
         pane.getChildren().add(hpLabel);
         pane.getChildren().add(nameLabel);
-
-        return opp;
     }
 
     public GameClient getGameClient() {
         return gameClient;
+    }
+
+    public void moveOpp(String oppName, double x, double y) {
+        boolean isFound = false;
+
+        for (Opp opp : opps) {
+            if (opp.getName().equals(oppName)) {
+                opp.setX(x);
+                opp.setY(y);
+                isFound = true;
+            }
+        }
+
+        if (!isFound) {
+            createNewOpp(oppName);
+            moveOpp(oppName, x, y);
+        }
     }
 
     public void setGameClient(GameClient gameClient) {

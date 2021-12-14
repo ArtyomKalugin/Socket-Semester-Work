@@ -23,6 +23,7 @@ public class GameServer {
             BufferedWriter output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
 
             GameServerThread gameServerThread = new GameServerThread(input, output, this);
+
             clients.add(gameServerThread);
 
             new Thread(gameServerThread).start();
@@ -30,7 +31,6 @@ public class GameServer {
     }
 
     public void sendMessage(String message, GameServerThread sender) throws IOException {
-        System.out.println(message);
         for (GameServerThread client : clients) {
             if (client.equals(sender)){
                 continue;

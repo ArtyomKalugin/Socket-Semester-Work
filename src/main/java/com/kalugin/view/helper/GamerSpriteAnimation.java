@@ -34,8 +34,8 @@ public class GamerSpriteAnimation extends Transition {
         setCycleCount(Animation.INDEFINITE);
         setInterpolator(Interpolator.LINEAR);
 
-        Image IMAGE = new Image(new File("src/main/resources/shooter.png").toURI().toString());
-        imageView = new ImageView(IMAGE);
+        Image image = new Image(new File("src/main/resources/shooter.png").toURI().toString());
+        imageView = new ImageView(image);
         imageView.setViewport(new Rectangle2D(0, 0, 53, 94));
         imageView.setY(0);
         imageView.setX(0);

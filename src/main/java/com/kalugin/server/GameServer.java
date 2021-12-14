@@ -34,7 +34,7 @@ public class GameServer {
             if (client.equals(sender)){
                 continue;
             }
-            
+
             client.getOutput().write(message+ "\n");
             client.getOutput().flush();
         }

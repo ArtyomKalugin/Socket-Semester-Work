@@ -11,6 +11,11 @@ public class GameClient {
     private Socket socket;
     private GameClientThread gameThread;
     private final GameMap map = GameMap.getInstance();
+    String name;
+
+    public GameClient(String name) {
+        this.name = name;
+    }
 
     public void sendMessage(String message) {
         try {
@@ -27,7 +32,7 @@ public class GameClient {
         BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
         BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-        gameThread = new GameClientThread(input, output, this);
+        gameThread = new GameClientThread(input, output, this, name);
 
         new Thread(gameThread).start();
     }

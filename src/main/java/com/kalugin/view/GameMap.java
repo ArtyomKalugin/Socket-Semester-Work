@@ -4,11 +4,14 @@ import com.kalugin.client.GameClient;
 import com.kalugin.view.helper.GamerSpriteAnimation;
 import com.kalugin.view.model.Bot;
 import com.kalugin.view.model.Gamer;
+import com.kalugin.view.model.Opp;
 import com.kalugin.view.model.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -28,16 +31,62 @@ public class GameMap {
     private Scene scene;
     private String name;
     private GameClient gameClient;
+    private final Font font = Font.font("Courier New", FontWeight.BOLD, 20);
 
-    private void configure() throws IOException {
-        gameClient = new GameClient();
+
+    private void configureMultiPlayer() throws IOException {
+        gameClient = new GameClient(name);
         gameClient.start();
 
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, name);
+        nameLabel.setFont(font);
+        hpLabel.setFont(font);
         Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
+        checkOpps(gamer);
+
+        Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
+        ImageView backgroundIV = new ImageView(backgroundImg);
+        backgroundIV.setFitHeight(stageHeight);
+        backgroundIV.setFitWidth(stageWidth);
+
+        pane.getChildren().add(backgroundIV);
+        pane.getChildren().add(hpLabel);
+        pane.getChildren().add(nameLabel);
+
+        setGamer(gamer);
+
+        scene = new Scene(pane, stageWidth, stageHeight);
+
+        for(Gamer g : gamers) {
+            scene.setOnKeyPressed(g);
+            scene.setOnKeyReleased(g);
+        }
+
+        stage.setScene(scene);
+        readMap();
+        stage.show();
+        stage.setFullScreen(true);
+
+        String message = "new " + name + "\n";
+        gameClient.sendMessage(message);
+    }
+
+    private void configureSinglePlayer() throws IOException {
+        gameClient = new GameClient(name);
+        gameClient.start();
+
+        Text hpLabel = new Text(0, -5, "100");
+        Text nameLabel = new Text(0, -10, name);
+        nameLabel.setFont(font);
+        hpLabel.setFont(font);
+        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
+
         Text hpLabel2 = new Text(0, -5, "100");
-        Bot bot = new Bot(0, 0, 30, 94, hpLabel2);
+        Text botNameLabel = new Text(0, -10, "Bot");
+        botNameLabel.setFont(font);
+        hpLabel2.setFont(font);
+        Bot bot = new Bot(0, 0, 30, 94, hpLabel2, botNameLabel);
 
         Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
         ImageView backgroundIV = new ImageView(backgroundImg);
@@ -48,6 +97,7 @@ public class GameMap {
         pane.getChildren().add(hpLabel);
         pane.getChildren().add(hpLabel2);
         pane.getChildren().add(nameLabel);
+        pane.getChildren().add(botNameLabel);
 
         setGamer(gamer);
         setBot(bot);
@@ -125,7 +175,14 @@ public class GameMap {
 
     public void setStage(Stage stage) throws IOException {
         this.stage = stage;
-        configure();
+    }
+
+    public void startSinglePlayer() throws IOException {
+        configureSinglePlayer();
+    }
+
+    public void startMultiPlayer() throws IOException {
+        configureMultiPlayer();
     }
 
     private void readMap() {
@@ -161,6 +218,42 @@ public class GameMap {
                 }
             }
         }
+    }
+
+    public void addOpp(String senderName, String oppName) {
+        for (Gamer gamer : gamers) {
+            if (gamer.getName().equals(senderName)) {
+                for (Gamer opp : gamers) {
+                    if (opp.getName().equals(oppName)) {
+                        gamer.addOpp(createNewOpp(oppName));
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkOpps(Gamer sender) {
+        for (Gamer gamer : gamers) {
+            if (gamer.equals(sender)) {
+                continue;
+            }
+
+            sender.addOpp(createNewOpp(gamer.getName()));
+        }
+    }
+
+    private Opp createNewOpp(String oppName) {
+        Text hpLabel = new Text(0, -5, "100");
+        Text nameLabel = new Text(0, -10, oppName);
+        nameLabel.setFont(font);
+        hpLabel.setFont(font);
+
+        Opp opp = new Opp(hpLabel, nameLabel, oppName);
+        pane.getChildren().add(opp);
+        pane.getChildren().add(hpLabel);
+        pane.getChildren().add(nameLabel);
+
+        return opp;
     }
 
     public GameClient getGameClient() {

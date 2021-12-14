@@ -20,11 +20,12 @@ public class Bot extends Rectangle {
     private final GameMap map = GameMap.getInstance();
     private double hp;
     private Text hpLabel;
+    private final Text nameLabel;
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;
     private int fallDamage = 0;
 
-    public Bot(double x, double y, double width, double height, Text hpLabel) {
+    public Bot(double x, double y, double width, double height, Text hpLabel, Text nameLabel) {
         super(x, y, width, height);
         this.height = height;
         this.width = width;
@@ -34,6 +35,7 @@ public class Bot extends Rectangle {
         hp = 100;
         this.hpLabel = hpLabel;
         isFallen = false;
+        this.nameLabel = nameLabel;
 
         setFill(Color.TRANSPARENT);
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -73,6 +75,9 @@ public class Bot extends Rectangle {
 
                 hpLabel.setX(getX());
                 hpLabel.setY(getY());
+
+                nameLabel.setX(getX());
+                nameLabel.setY(getY() - 20);
             }
         };
         animationTimer.start();
@@ -111,6 +116,8 @@ public class Bot extends Rectangle {
         if(hp <= 0) {
             map.deleteBot(this);
             hpLabel.setText("");
+            nameLabel.setText("");
+            map.getPane().getChildren().remove(nameLabel);
             gamerAnimation.delete();
         }
     }

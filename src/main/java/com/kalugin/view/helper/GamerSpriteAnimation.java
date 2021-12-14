@@ -21,6 +21,9 @@ public class GamerSpriteAnimation extends Transition {
     private int width;
     private int height;
     private final GameMap map = GameMap.getInstance();
+    private int index;
+    private int x;
+    private int y;
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
                            int height, Duration duration) {
@@ -112,10 +115,22 @@ public class GamerSpriteAnimation extends Transition {
 
     @Override
     protected void interpolate(double v) {
-        int index = Math.min((int) Math.floor(v * count), count - 1);
-        int x = (index % columns) * width + offsetX;
-        int y = (index / columns) * height + offsetY;
+        index = Math.min((int) Math.floor(v * count), count - 1);
+        x = (index % columns) * width + offsetX;
+        y = (index / columns) * height + offsetY;
 
         imageView.setViewport(new Rectangle2D(x, y, width, height));
+    }
+
+    public void setParameters(int x, int y) {
+        imageView.setViewport(new Rectangle2D(x, y, width, height));
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

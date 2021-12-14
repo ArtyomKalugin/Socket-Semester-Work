@@ -28,7 +28,7 @@ public class GameMap {
     private ArrayList<Platform> platforms = new ArrayList<>();
     private ArrayList<Gamer> gamers = new ArrayList<>();
     private ArrayList<Bot> bots = new ArrayList<>();
-    private CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
     private Stage stage;
@@ -228,7 +228,10 @@ public class GameMap {
         Text nameLabel = new Text(0, -10, oppName);
         nameLabel.setFont(font);
         hpLabel.setFont(font);
+        GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
+                53, 94, Duration.millis(380));
         Opp opp = new Opp(hpLabel, nameLabel, oppName);
+        opp.setGamerAnimation(gamerAnimation);
 
         javafx.application.Platform.runLater(() -> {
             opps.add(opp);
@@ -242,23 +245,20 @@ public class GameMap {
         return gameClient;
     }
 
-    public void moveOpp(String oppName, double x, double y) {
+    public synchronized void moveOpp(String oppName, double x, double y, int animationX, int animationY) {
         boolean isFound = false;
 
         for (Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
-                javafx.application.Platform.runLater(() -> {
-                    opp.setX(x);
-                    opp.setY(y);
-                });
-                
+                opp.setX(x);
+                opp.setY(y);
+                opp.changeAnimation(animationX, animationY);
                 isFound = true;
             }
         }
 
         if (!isFound) {
             createNewOpp(oppName);
-            moveOpp(oppName, x, y);
         }
     }
 

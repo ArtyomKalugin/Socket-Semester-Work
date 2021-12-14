@@ -89,7 +89,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 nameLabel.setX(getX());
                 nameLabel.setY(getY() - 20);
 
-                String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
+                String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + gamerAnimation.getX() +
+                        gamerAnimation.getY() + "\n";
                 map.getGameClient().sendMessage(message);
             }
         };
@@ -240,7 +241,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     nameLabel.setX(getX());
                     nameLabel.setY(getY() - 20);
 
-                    String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
+                    String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + gamerAnimation.getX() +
+                            gamerAnimation.getY() + "\n";
                     map.getGameClient().sendMessage(message);
                 }
             };
@@ -283,7 +285,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
+        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + gamerAnimation.getX() +
+                gamerAnimation.getY() + "\n";
         map.getGameClient().sendMessage(message);
     }
 
@@ -321,7 +324,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + "\n";
+        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + gamerAnimation.getX() +
+                gamerAnimation.getY() + "\n";
         map.getGameClient().sendMessage(message);
     }
 

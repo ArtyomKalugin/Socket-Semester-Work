@@ -30,6 +30,10 @@ public class Opp extends Rectangle {
         return name;
     }
 
+    public void changeAnimation(int x, int y) {
+        gamerAnimation.setParameters(x, y);
+    }
+
     public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
         this.gamerAnimation = gamerAnimation;
     }

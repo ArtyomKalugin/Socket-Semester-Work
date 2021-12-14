@@ -18,6 +18,8 @@ import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GameMap {
     private final int stageWidth = 1450;
@@ -25,7 +27,7 @@ public class GameMap {
     private ArrayList<Platform> platforms = new ArrayList<>();
     private ArrayList<Gamer> gamers = new ArrayList<>();
     private ArrayList<Bot> bots = new ArrayList<>();
-    private ArrayList<Opp> opps = new ArrayList<>();
+    private List<Opp> opps = Collections.synchronizedList(new ArrayList<>());
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
     private Stage stage;
@@ -268,7 +270,7 @@ public class GameMap {
         return name;
     }
 
-    public ArrayList<Opp> getOpps() {
+    public List<Opp> getOpps() {
         return opps;
     }
 }

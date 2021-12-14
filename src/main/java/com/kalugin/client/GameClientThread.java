@@ -31,7 +31,6 @@ public class GameClientThread implements Runnable{
         try {
             while (true) {
                 String message = input.readLine();
-                System.out.println(message);
 
                 if(message != null) {
                     String[] directions = message.split(" ");

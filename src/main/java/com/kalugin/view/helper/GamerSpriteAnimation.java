@@ -42,7 +42,10 @@ public class GamerSpriteAnimation extends Transition {
         imageView.setViewport(new Rectangle2D(0, 0, 53, 94));
         imageView.setY(0);
         imageView.setX(0);
-        map.getPane().getChildren().add(imageView);
+
+        javafx.application.Platform.runLater(() -> {
+            map.getPane().getChildren().add(imageView);
+        });
     }
 
     public void changeTurnToRight() {

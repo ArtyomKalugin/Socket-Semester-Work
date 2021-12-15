@@ -43,13 +43,17 @@ public class GameClientThread implements Runnable{
                         double x = Double.parseDouble(directions[2]);
                         double y = Double.parseDouble(directions[3]);
 
-                        int animationX = Integer.parseInt(directions[4]);
-                        int animationY = Integer.parseInt(directions[5]);
+                        int animationIndex = Integer.parseInt(directions[4]);
+                        int animationColumns = Integer.parseInt(directions[5]);
 
-                        int animationWidth = Integer.parseInt(directions[5]);
-                        int animationHeight = Integer.parseInt(directions[6]);
+                        int animationWidth = Integer.parseInt(directions[6]);
+                        int animationHeight = Integer.parseInt(directions[7]);
 
-                        map.moveOpp(directions[1], x, y, animationX, animationY, animationWidth, animationHeight);
+                        int animationOffsetX = Integer.parseInt(directions[8]);
+                        int animationOffsetY = Integer.parseInt(directions[9]);
+
+                        map.moveOpp(directions[1], x, y, animationIndex, animationColumns, animationWidth, animationHeight,
+                                animationOffsetX, animationOffsetY);
                     }
                 }
             }

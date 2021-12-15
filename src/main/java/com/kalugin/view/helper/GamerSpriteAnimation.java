@@ -20,10 +20,8 @@ public class GamerSpriteAnimation extends Transition {
     private int offsetY;
     private int width;
     private int height;
-    private final GameMap map = GameMap.getInstance();
     private int index;
-    private int x;
-    private int y;
+    private final GameMap map = GameMap.getInstance();
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
                            int height, Duration duration) {
@@ -108,7 +106,7 @@ public class GamerSpriteAnimation extends Transition {
         width = 53;
         height = 94;
 
-        int index = Math.min((int) Math.floor(0), count - 1);
+        index = Math.min((int) Math.floor(0), count - 1);
         int x = (index % columns) * width + offsetX;
         int y = (index / columns) * height + offsetY;
         imageView.setViewport(new Rectangle2D(x, y, width, height));
@@ -119,22 +117,18 @@ public class GamerSpriteAnimation extends Transition {
     @Override
     protected void interpolate(double v) {
         index = Math.min((int) Math.floor(v * count), count - 1);
-        x = (index % columns) * width + offsetX;
-        y = (index / columns) * height + offsetY;
+        int x = (index % columns) * width + offsetX;
+        int y = (index / columns) * height + offsetY;
 
         imageView.setViewport(new Rectangle2D(x, y, width, height));
     }
 
-    public synchronized void setParameters(int x, int y, int spriteWidth, int spriteHeight) {
+    public synchronized void setParameters(int spriteIndex, int spriteColumns, int spriteWidth, int spriteHeight,
+                                           int spriteOffsetX, int spriteOffsetY) {
+        int x = (spriteIndex % spriteColumns) * spriteWidth + spriteOffsetX;
+        int y = (spriteIndex / spriteColumns) * spriteHeight + spriteOffsetY;
+
         imageView.setViewport(new Rectangle2D(x, y, spriteWidth, spriteHeight));
-    }
-
-    public synchronized int getX() {
-        return x;
-    }
-
-    public synchronized int getY() {
-        return y;
     }
 
     public synchronized int getWidth() {
@@ -143,5 +137,21 @@ public class GamerSpriteAnimation extends Transition {
 
     public synchronized int getHeight() {
         return height;
+    }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

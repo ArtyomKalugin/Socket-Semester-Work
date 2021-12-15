@@ -223,7 +223,7 @@ public class GameMap {
         }
     }
 
-    public void createNewOpp(String oppName) {
+    public synchronized void createNewOpp(String oppName) {
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, oppName);
         nameLabel.setFont(font);
@@ -245,15 +245,16 @@ public class GameMap {
         return gameClient;
     }
 
-    public synchronized void moveOpp(String oppName, double x, double y, int animationX, int animationY,
-                                     int animationWidth, int animationHeight) {
+    public synchronized void moveOpp(String oppName, double x, double y, int animationIndex, int animationColumns,
+                                     int animationWidth, int animationHeight, int animationOffsetX, int animationOffsetY) {
         boolean isFound = false;
 
         for (Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
                 opp.setX(x);
                 opp.setY(y);
-                opp.changeAnimation(animationX, animationY, animationWidth, animationHeight);
+                opp.changeAnimation(animationIndex, animationColumns, animationWidth, animationHeight,
+                        animationOffsetX, animationOffsetY);
                 isFound = true;
             }
         }

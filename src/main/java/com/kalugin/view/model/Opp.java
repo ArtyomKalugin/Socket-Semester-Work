@@ -22,16 +22,19 @@ public class Opp extends Rectangle {
         this.nameLabel = nameLabel;
         this.name = name;
 
-//        setFill(Color.TRANSPARENT);
-        setFill(Color.BLACK);
+        setFill(Color.TRANSPARENT);
     }
 
     public String getName() {
         return name;
     }
 
-    public void changeAnimation(int x, int y, int width, int height) {
-        gamerAnimation.setParameters(x, y, width, height);
+    public void changeAnimation(int animationIndex, int animationColumns,
+                                int animationWidth, int animationHeight, int animationOffsetX, int animationOffsetY) {
+        gamerAnimation.setParameters(animationIndex, animationColumns, animationWidth,
+                animationHeight, animationOffsetX, animationOffsetY);
+        gamerAnimation.setX(getX());
+        gamerAnimation.setY(getY());
     }
 
     public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {

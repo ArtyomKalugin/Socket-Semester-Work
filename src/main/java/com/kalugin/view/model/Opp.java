@@ -37,7 +37,7 @@ public class Opp extends Rectangle {
         gamerAnimation.setY(getY());
     }
 
-    public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
+    public synchronized void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {
         this.gamerAnimation = gamerAnimation;
     }
 }

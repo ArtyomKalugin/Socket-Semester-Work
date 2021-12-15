@@ -14,14 +14,14 @@ import java.io.File;
 
 public class GamerSpriteAnimation extends Transition {
     private final ImageView imageView;
-    private int count;
-    private int columns;
-    private int offsetX;
-    private int offsetY;
-    private int width;
-    private int height;
-    private int index;
-    private final GameMap map = GameMap.getInstance();
+    private static int count;
+    private static int columns;
+    private static int offsetX;
+    private static int offsetY;
+    private static int width;
+    private static int height;
+    private static int index;
+    private static final GameMap map = GameMap.getInstance();
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
                                 int height, Duration duration) {

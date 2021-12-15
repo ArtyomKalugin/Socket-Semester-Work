@@ -21,19 +21,19 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameMap {
-    private final int stageWidth = 1450;
-    private final int stageHeight = 900;
-    private CopyOnWriteArrayList<Platform> platforms = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<Gamer> gamers = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<Bot> bots = new CopyOnWriteArrayList<>();
+    private static final int stageWidth = 1450;
+    private static final int stageHeight = 900;
+    private static CopyOnWriteArrayList<Platform> platforms = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Gamer> gamers = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Bot> bots = new CopyOnWriteArrayList<>();
     private static CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
-    private final Pane pane = new Pane();
+    private static final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
-    private Stage stage;
-    private Scene scene;
-    private String name;
-    private GameClient gameClient;
-    private final Font font = Font.font("Courier New", FontWeight.BOLD, 20);
+    private static Stage stage;
+    private static Scene scene;
+    private static String name;
+    private static GameClient gameClient;
+    private static final Font font = Font.font("Courier New", FontWeight.BOLD, 20);
 
 
     private void configureMultiPlayer() throws IOException {
@@ -231,16 +231,15 @@ public class GameMap {
         }
 
         if(!isFound) {
-            Text hpLabel = new Text(0, -5, "100");
-            Text nameLabel = new Text(0, -10, oppName);
-            nameLabel.setFont(font);
-            hpLabel.setFont(font);
-            GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
-                    53, 94, Duration.millis(380));
-            Opp opp = new Opp(hpLabel, nameLabel, oppName);
-            opp.setGamerAnimation(gamerAnimation);
-
             javafx.application.Platform.runLater(() -> {
+                Text hpLabel = new Text(0, -5, "100");
+                Text nameLabel = new Text(0, -10, oppName);
+                nameLabel.setFont(font);
+                hpLabel.setFont(font);
+                GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
+                        53, 94, Duration.millis(380));
+                Opp opp = new Opp(hpLabel, nameLabel, oppName);
+                opp.setGamerAnimation(gamerAnimation);
                 opps.add(opp);
                 pane.getChildren().add(opp);
                 pane.getChildren().add(hpLabel);

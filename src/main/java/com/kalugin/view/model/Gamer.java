@@ -352,15 +352,19 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         }
     }
 
-    private void shoot() {
+    private synchronized void shoot() {
         if(canShoot && !isDead) {
             canShoot = false;
             Bullet bullet;
 
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
                 bullet = new Bullet(getX() + width + 1, getY() + 30, true, this);
+                map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " right " + bullet.getDamage() +
+                        " " + bullet.getX() + " " + bullet.getY() + "\n");
             } else {
                 bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, this);
+                map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " left " + bullet.getDamage() +
+                        " " + bullet.getX() + " " + bullet.getY() + "\n");
             }
             map.getPane().getChildren().add(bullet);
         }

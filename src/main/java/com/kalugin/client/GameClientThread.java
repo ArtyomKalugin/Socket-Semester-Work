@@ -35,7 +35,7 @@ public class GameClientThread implements Runnable{
                 if(message != null) {
                     String[] directions = message.split(" ");
 
-                    if(directions[0].equals("new")) {
+                    if (directions[0].equals("new")) {
                         map.createNewOpp(directions[1]);
                     }
 
@@ -54,6 +54,20 @@ public class GameClientThread implements Runnable{
 
                         map.moveOpp(directions[1], x, y, animationIndex, animationColumns, animationWidth, animationHeight,
                                 animationOffsetX, animationOffsetY);
+                    }
+
+                    if (directions[0].equals("shoot")) {
+                        boolean isRight = false;
+                        String rotation = directions[2];
+                        if (rotation.equals("right")) {
+                            isRight = true;
+                        }
+
+                        int damage = Integer.parseInt(directions[3]);
+                        double x = Double.parseDouble(directions[4]);
+                        double y = Double.parseDouble(directions[5]);
+
+
                     }
                 }
             }

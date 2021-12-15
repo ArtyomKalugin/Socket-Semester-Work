@@ -51,6 +51,6 @@ public class Opp extends Rectangle {
         hpLabel.setY(y - 5);
 
         nameLabel.setX(x);
-        nameLabel.setY(y - 10);
+        nameLabel.setY(y - 20);
     }
 }

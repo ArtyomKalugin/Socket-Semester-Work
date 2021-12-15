@@ -13,30 +13,51 @@ public class Bullet extends Rectangle {
     private final boolean isRight;
     private GameMap map = GameMap.getInstance();
     private Gamer sender;
+    private static int damage;
 
     public Bullet(double x, double y, boolean isRight, Gamer sender) {
         super(x, y, width, height);
         setFill(Color.YELLOW);
         this.isRight = isRight;
         this.sender = sender;
+        Random rn = new Random();
+        damage = 10 + rn.nextInt(11);
 
+        move();
+    }
+
+    public Bullet(double x, double y, boolean isRight, int damage) {
+        super(x, y, width, height);
+        setFill(Color.YELLOW);
+        this.isRight = isRight;
+        this.damage = damage;
+
+        move();
+    }
+
+    private synchronized void move() {
         Bullet bullet = this;
+
         AnimationTimer animationTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                Random rn = new Random();
-
                 for(Platform platform : map.getPlatforms()) {
                     if(bullet.getBoundsInParent().intersects(platform.getBoundsInParent())) {
-                        map.getPane().getChildren().remove(bullet);
+                        javafx.application.Platform.runLater(() -> {
+                            map.getPane().getChildren().remove(bullet);
+                        });
+
                         this.stop();
                     }
                 }
 
                 for(Bot bot : map.getBots()) {
                     if(bot != null && bullet.getBoundsInParent().intersects(bot.getBoundsInParent())) {
-                        bot.getDamage(10 + rn.nextInt(11));
-                        map.getPane().getChildren().remove(bullet);
+                        javafx.application.Platform.runLater(() -> {
+                            bot.getDamage(damage);
+                            map.getPane().getChildren().remove(bullet);
+                        });
+
                         this.stop();
                     }
                 }
@@ -44,31 +65,40 @@ public class Bullet extends Rectangle {
                 for(Gamer gamer : map.getGamers()) {
                     if(gamer != null && bullet.getBoundsInParent().intersects(gamer.getBoundsInParent())
                             && gamer != sender) {
-                        gamer.getDamage(10 + rn.nextInt(11));
-                        map.getPane().getChildren().remove(bullet);
+                        javafx.application.Platform.runLater(() -> {
+                            gamer.getDamage(damage);
+                            map.getPane().getChildren().remove(bullet);
+                        });
+
                         this.stop();
                     }
                 }
 
-                if(isRight) {
-                    if(getX() <= map.getStageWidth()) {
-                        setX(getX() + 20);
-                    } else {
-                        map.getPane().getChildren().remove(bullet);
-                        this.stop();
-                    }
+                javafx.application.Platform.runLater(() -> {
+                    if(isRight) {
+                        if(getX() <= map.getStageWidth()) {
+                            setX(getX() + 20);
+                        } else {
+                            map.getPane().getChildren().remove(bullet);
+                            this.stop();
+                        }
 
-                } else {
-                    if(getX() + width >= 0) {
-                        setX(getX() - 20);
                     } else {
-                        map.getPane().getChildren().remove(bullet);
-                        this.stop();
+                        if(getX() + width >= 0) {
+                            setX(getX() - 20);
+                        } else {
+                            map.getPane().getChildren().remove(bullet);
+                            this.stop();
+                        }
                     }
-                }
+                });
             }
         };
 
         animationTimer.start();
+    }
+
+    public synchronized int getDamage() {
+        return damage;
     }
 }

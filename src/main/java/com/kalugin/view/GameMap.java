@@ -2,10 +2,7 @@ package com.kalugin.view;
 
 import com.kalugin.client.GameClient;
 import com.kalugin.view.helper.GamerSpriteAnimation;
-import com.kalugin.view.model.Bot;
-import com.kalugin.view.model.Gamer;
-import com.kalugin.view.model.Opp;
-import com.kalugin.view.model.Platform;
+import com.kalugin.view.model.*;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -234,7 +231,7 @@ public class GameMap {
         if(!isFound) {
             javafx.application.Platform.runLater(() -> {
                 Text hpLabel = new Text(0, -5, "100");
-                Text nameLabel = new Text(0, -10, oppName);
+                Text nameLabel = new Text(0, -20, oppName);
                 nameLabel.setFont(font);
                 nameLabel.setFill(Color.RED);
                 hpLabel.setFont(font);
@@ -253,6 +250,13 @@ public class GameMap {
 
     public GameClient getGameClient() {
         return gameClient;
+    }
+
+    public synchronized void createBullet(boolean isRight, int damage, double x, double y) {
+        javafx.application.Platform.runLater(() -> {
+            Bullet bullet = new Bullet(x, y, isRight, damage);
+            pane.getChildren().add(bullet);
+        });
     }
 
     public synchronized void moveOpp(String oppName, double x, double y, int animationIndex, int animationColumns,

@@ -43,12 +43,14 @@ public class Opp extends Rectangle {
         this.gamerAnimation = gamerAnimation;
     }
 
-    public synchronized void move(double x, double y) {
+    public synchronized void move(double x, double y, int hp) {
+        this.hp = hp;
         setX(x);
         setY(y);
 
         hpLabel.setX(x);
         hpLabel.setY(y - 5);
+        hpLabel.setText(String.valueOf(hp));
 
         nameLabel.setX(x);
         nameLabel.setY(y - 20);

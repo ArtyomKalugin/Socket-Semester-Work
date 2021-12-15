@@ -260,13 +260,14 @@ public class GameMap {
     }
 
     public synchronized void moveOpp(String oppName, double x, double y, int animationIndex, int animationColumns,
-                                     int animationWidth, int animationHeight, int animationOffsetX, int animationOffsetY) {
+                                     int animationWidth, int animationHeight, int animationOffsetX,
+                                     int animationOffsetY, int hp) {
         boolean isFound = false;
 
         for (Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
                 javafx.application.Platform.runLater(() -> {
-                    opp.move(x, y);
+                    opp.move(x, y, hp);
                     opp.changeAnimation(animationIndex, animationColumns, animationWidth, animationHeight,
                             animationOffsetX, animationOffsetY);
                 });

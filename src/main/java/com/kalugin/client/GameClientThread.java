@@ -52,8 +52,10 @@ public class GameClientThread implements Runnable{
                         int animationOffsetX = Integer.parseInt(directions[8]);
                         int animationOffsetY = Integer.parseInt(directions[9]);
 
+                        int hp = Integer.parseInt(directions[10]);
+
                         map.moveOpp(directions[1], x, y, animationIndex, animationColumns, animationWidth, animationHeight,
-                                animationOffsetX, animationOffsetY);
+                                animationOffsetX, animationOffsetY, hp);
                     }
 
                     if (directions[0].equals("shoot")) {

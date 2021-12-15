@@ -164,7 +164,7 @@ public class GameMap {
         return gameMap;
     }
 
-    public List<Gamer> getGamers() {
+    public synchronized List<Gamer> getGamers() {
         return gamers;
     }
 
@@ -292,7 +292,7 @@ public class GameMap {
         return name;
     }
 
-    public List<Opp> getOpps() {
+    public synchronized List<Opp> getOpps() {
         return opps;
     }
 }

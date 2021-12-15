@@ -74,6 +74,17 @@ public class Bullet extends Rectangle {
                     }
                 }
 
+                for(Opp opp : map.getOpps()) {
+                    if(opp != null && bullet.getBoundsInParent().intersects(opp.getBoundsInParent())) {
+                        javafx.application.Platform.runLater(() -> {
+                            opp.getDamage(damage);
+                            map.getPane().getChildren().remove(bullet);
+                        });
+
+                        this.stop();
+                    }
+                }
+
                 javafx.application.Platform.runLater(() -> {
                     if(isRight) {
                         if(getX() <= map.getStageWidth()) {

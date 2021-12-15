@@ -66,8 +66,10 @@ public class GamerSpriteAnimation extends Transition {
         columns = 5;
     }
 
-    public void delete() {
-       map.getPane().getChildren().remove(imageView);
+    public synchronized void delete() {
+        javafx.application.Platform.runLater(() -> {
+            map.getPane().getChildren().remove(imageView);
+        });
     }
 
     public void changeTurnToFall(NodeOrientation orientation) {

@@ -338,17 +338,22 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         map.getGameClient().sendMessage(message);
     }
 
-    public void getDamage(double damage) {
+    public synchronized void getDamage(double damage) {
         hp -= damage;
-        hpLabel.setText(String.valueOf(hp));
+
+        javafx.application.Platform.runLater(() -> {
+            hpLabel.setText(String.valueOf(hp));
+        });
 
         if(hp <= 0) {
-            map.deleteGamer(this);
-            isDead = true;
-            hpLabel.setText("");
-            nameLabel.setText("");
-            map.getPane().getChildren().remove(nameLabel);
-            gamerAnimation.delete();
+            javafx.application.Platform.runLater(() -> {
+                map.deleteGamer(this);
+                isDead = true;
+                hpLabel.setText("");
+                nameLabel.setText("");
+                map.getPane().getChildren().remove(nameLabel);
+                gamerAnimation.delete();
+            });
         }
     }
 

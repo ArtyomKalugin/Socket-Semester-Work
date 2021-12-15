@@ -67,7 +67,7 @@ public class GameClientThread implements Runnable{
                         double x = Double.parseDouble(directions[4]);
                         double y = Double.parseDouble(directions[5]);
 
-
+                        map.createBullet(isRight, damage, x, y);
                     }
                 }
             }

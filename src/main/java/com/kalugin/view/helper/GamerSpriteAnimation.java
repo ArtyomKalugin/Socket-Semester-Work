@@ -24,7 +24,7 @@ public class GamerSpriteAnimation extends Transition {
     private final GameMap map = GameMap.getInstance();
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
-                           int height, Duration duration) {
+                                int height, Duration duration) {
         this.count = count;
         this.columns = columns;
         this.offsetX = offsetX;

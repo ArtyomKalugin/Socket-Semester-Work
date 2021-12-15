@@ -29,7 +29,7 @@ public class Opp extends Rectangle {
         return name;
     }
 
-    public void changeAnimation(int animationIndex, int animationColumns,
+    public synchronized void changeAnimation(int animationIndex, int animationColumns,
                                 int animationWidth, int animationHeight, int animationOffsetX, int animationOffsetY) {
         gamerAnimation.setParameters(animationIndex, animationColumns, animationWidth,
                 animationHeight, animationOffsetX, animationOffsetY);

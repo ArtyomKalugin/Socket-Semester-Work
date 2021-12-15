@@ -17,8 +17,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -224,21 +222,31 @@ public class GameMap {
     }
 
     public synchronized void createNewOpp(String oppName) {
-        Text hpLabel = new Text(0, -5, "100");
-        Text nameLabel = new Text(0, -10, oppName);
-        nameLabel.setFont(font);
-        hpLabel.setFont(font);
-        GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
-                53, 94, Duration.millis(380));
-        Opp opp = new Opp(hpLabel, nameLabel, oppName);
-        opp.setGamerAnimation(gamerAnimation);
+        boolean isFound = false;
 
-        javafx.application.Platform.runLater(() -> {
-            opps.add(opp);
-            pane.getChildren().add(opp);
-            pane.getChildren().add(hpLabel);
-            pane.getChildren().add(nameLabel);
-        });
+        for(Opp opp : opps) {
+            if (opp.getName().equals(oppName)) {
+                isFound = true;
+            }
+        }
+
+        if(!isFound) {
+            Text hpLabel = new Text(0, -5, "100");
+            Text nameLabel = new Text(0, -10, oppName);
+            nameLabel.setFont(font);
+            hpLabel.setFont(font);
+            GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
+                    53, 94, Duration.millis(380));
+            Opp opp = new Opp(hpLabel, nameLabel, oppName);
+            opp.setGamerAnimation(gamerAnimation);
+
+            javafx.application.Platform.runLater(() -> {
+                opps.add(opp);
+                pane.getChildren().add(opp);
+                pane.getChildren().add(hpLabel);
+                pane.getChildren().add(nameLabel);
+            });
+        }
     }
 
     public GameClient getGameClient() {

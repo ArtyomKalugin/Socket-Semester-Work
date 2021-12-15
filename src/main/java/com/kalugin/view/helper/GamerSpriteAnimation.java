@@ -115,7 +115,7 @@ public class GamerSpriteAnimation extends Transition {
     }
 
     @Override
-    protected void interpolate(double v) {
+    protected synchronized void interpolate(double v) {
         index = Math.min((int) Math.floor(v * count), count - 1);
         int x = (index % columns) * width + offsetX;
         int y = (index / columns) * height + offsetY;
@@ -139,19 +139,19 @@ public class GamerSpriteAnimation extends Transition {
         return height;
     }
 
-    public int getColumns() {
+    public synchronized int getColumns() {
         return columns;
     }
 
-    public int getOffsetX() {
+    public synchronized int getOffsetX() {
         return offsetX;
     }
 
-    public int getOffsetY() {
+    public synchronized int getOffsetY() {
         return offsetY;
     }
 
-    public int getIndex() {
+    public synchronized int getIndex() {
         return index;
     }
 }

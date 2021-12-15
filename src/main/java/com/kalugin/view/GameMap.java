@@ -25,9 +25,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GameMap {
     private final int stageWidth = 1450;
     private final int stageHeight = 900;
-    private ArrayList<Platform> platforms = new ArrayList<>();
-    private ArrayList<Gamer> gamers = new ArrayList<>();
-    private ArrayList<Bot> bots = new ArrayList<>();
+    private CopyOnWriteArrayList<Platform> platforms = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Gamer> gamers = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Bot> bots = new CopyOnWriteArrayList<>();
     private static CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
     private final Pane pane = new Pane();
     private static GameMap gameMap = new GameMap();
@@ -126,7 +126,7 @@ public class GameMap {
         return stageHeight;
     }
 
-    public ArrayList<Platform> getPlatforms() {
+    public List<Platform> getPlatforms() {
         return platforms;
     }
 
@@ -168,11 +168,11 @@ public class GameMap {
         return gameMap;
     }
 
-    public ArrayList<Gamer> getGamers() {
+    public List<Gamer> getGamers() {
         return gamers;
     }
 
-    public ArrayList<Bot> getBots() {
+    public List<Bot> getBots() {
         return bots;
     }
 

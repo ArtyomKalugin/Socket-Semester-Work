@@ -43,7 +43,7 @@ public class Opp extends Rectangle {
         this.gamerAnimation = gamerAnimation;
     }
 
-    public synchronized void move(double x, double y, int hp) {
+    public synchronized void move(double x, double y, double hp) {
         this.hp = hp;
         setX(x);
         setY(y);

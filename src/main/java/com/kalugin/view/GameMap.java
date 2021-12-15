@@ -261,7 +261,7 @@ public class GameMap {
 
     public synchronized void moveOpp(String oppName, double x, double y, int animationIndex, int animationColumns,
                                      int animationWidth, int animationHeight, int animationOffsetX,
-                                     int animationOffsetY, int hp) {
+                                     int animationOffsetY, double hp) {
         boolean isFound = false;
 
         for (Opp opp : opps) {

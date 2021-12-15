@@ -52,7 +52,7 @@ public class GameClientThread implements Runnable{
                         int animationOffsetX = Integer.parseInt(directions[8]);
                         int animationOffsetY = Integer.parseInt(directions[9]);
 
-                        int hp = Integer.parseInt(directions[10]);
+                        double hp = Double.parseDouble(directions[10])
 
                         map.moveOpp(directions[1], x, y, animationIndex, animationColumns, animationWidth, animationHeight,
                                 animationOffsetX, animationOffsetY, hp);

@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -235,7 +236,9 @@ public class GameMap {
                 Text hpLabel = new Text(0, -5, "100");
                 Text nameLabel = new Text(0, -10, oppName);
                 nameLabel.setFont(font);
+                nameLabel.setFill(Color.RED);
                 hpLabel.setFont(font);
+                hpLabel.setFill(Color.RED);
                 GamerSpriteAnimation gamerAnimation = new GamerSpriteAnimation(6, 6, 0, 100,
                         53, 94, Duration.millis(380));
                 Opp opp = new Opp(hpLabel, nameLabel, oppName);
@@ -257,11 +260,9 @@ public class GameMap {
         boolean isFound = false;
 
         for (Opp opp : opps) {
-            System.out.println(opp.getName() + " " + oppName);
             if (opp.getName().equals(oppName)) {
                 javafx.application.Platform.runLater(() -> {
-                    opp.setX(x);
-                    opp.setY(y);
+                    opp.move(x, y);
                     opp.changeAnimation(animationIndex, animationColumns, animationWidth, animationHeight,
                             animationOffsetX, animationOffsetY);
                 });

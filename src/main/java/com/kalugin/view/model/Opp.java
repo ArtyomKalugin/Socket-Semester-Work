@@ -31,10 +31,12 @@ public class Opp extends Rectangle {
 
     public synchronized void changeAnimation(int animationIndex, int animationColumns,
                                 int animationWidth, int animationHeight, int animationOffsetX, int animationOffsetY) {
-        gamerAnimation.setParameters(animationIndex, animationColumns, animationWidth,
-                animationHeight, animationOffsetX, animationOffsetY);
-        gamerAnimation.setX(getX());
-        gamerAnimation.setY(getY());
+        javafx.application.Platform.runLater(() -> {
+            gamerAnimation.setParameters(animationIndex, animationColumns, animationWidth,
+                    animationHeight, animationOffsetX, animationOffsetY);
+            gamerAnimation.setX(getX());
+            gamerAnimation.setY(getY());
+        });
     }
 
     public synchronized void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {

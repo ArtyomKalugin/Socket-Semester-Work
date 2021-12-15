@@ -125,10 +125,12 @@ public class GamerSpriteAnimation extends Transition {
 
     public synchronized void setParameters(int spriteIndex, int spriteColumns, int spriteWidth, int spriteHeight,
                                            int spriteOffsetX, int spriteOffsetY) {
-        int x = (spriteIndex % spriteColumns) * spriteWidth + spriteOffsetX;
-        int y = (spriteIndex / spriteColumns) * spriteHeight + spriteOffsetY;
+        javafx.application.Platform.runLater(() -> {
+            int x = (spriteIndex % spriteColumns) * spriteWidth + spriteOffsetX;
+            int y = (spriteIndex / spriteColumns) * spriteHeight + spriteOffsetY;
 
-        imageView.setViewport(new Rectangle2D(x, y, spriteWidth, spriteHeight));
+            imageView.setViewport(new Rectangle2D(x, y, spriteWidth, spriteHeight));
+        });
     }
 
     public synchronized int getWidth() {

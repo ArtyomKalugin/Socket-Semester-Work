@@ -257,11 +257,15 @@ public class GameMap {
         boolean isFound = false;
 
         for (Opp opp : opps) {
+            System.out.println(opp.getName() + " " + oppName);
             if (opp.getName().equals(oppName)) {
-                opp.setX(x);
-                opp.setY(y);
-                opp.changeAnimation(animationIndex, animationColumns, animationWidth, animationHeight,
-                        animationOffsetX, animationOffsetY);
+                javafx.application.Platform.runLater(() -> {
+                    opp.setX(x);
+                    opp.setY(y);
+                    opp.changeAnimation(animationIndex, animationColumns, animationWidth, animationHeight,
+                            animationOffsetX, animationOffsetY);
+                });
+
                 isFound = true;
             }
         }

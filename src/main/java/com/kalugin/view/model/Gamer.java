@@ -91,7 +91,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
 
                 String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                        gamerAnimation.getX() + " " + gamerAnimation.getY() + "\n";
+                        gamerAnimation.getX() + " " + gamerAnimation.getY() + " " + gamerAnimation.getWidth() + " " +
+                        gamerAnimation.getHeight() + "\n";
                 map.getGameClient().sendMessage(message);
             }
         };
@@ -243,7 +244,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     nameLabel.setY(getY() - 20);
 
                     String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                            gamerAnimation.getX() + " " + gamerAnimation.getY() + "\n";
+                            gamerAnimation.getX() + " " + gamerAnimation.getY() + " " + gamerAnimation.getWidth() + " " +
+                            gamerAnimation.getHeight() + "\n";
                     map.getGameClient().sendMessage(message);
                 }
             };
@@ -287,7 +289,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setY(getY() - 20);
 
         String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                gamerAnimation.getX() + " " + gamerAnimation.getY() + "\n";
+                gamerAnimation.getX() + " " + gamerAnimation.getY() + " " + gamerAnimation.getWidth() + " " +
+                gamerAnimation.getHeight() + "\n";
         map.getGameClient().sendMessage(message);
     }
 
@@ -326,7 +329,8 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setY(getY() - 20);
 
         String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                gamerAnimation.getX() + " " + gamerAnimation.getY() + "\n";
+                gamerAnimation.getX() + " " + gamerAnimation.getY() + " " + gamerAnimation.getWidth() + " " +
+                gamerAnimation.getHeight() + "\n";
         map.getGameClient().sendMessage(message);
     }
 

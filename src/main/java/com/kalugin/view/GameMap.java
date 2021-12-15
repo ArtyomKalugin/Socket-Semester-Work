@@ -245,14 +245,15 @@ public class GameMap {
         return gameClient;
     }
 
-    public synchronized void moveOpp(String oppName, double x, double y, int animationX, int animationY) {
+    public synchronized void moveOpp(String oppName, double x, double y, int animationX, int animationY,
+                                     int animationWidth, int animationHeight) {
         boolean isFound = false;
 
         for (Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
                 opp.setX(x);
                 opp.setY(y);
-                opp.changeAnimation(animationX, animationY);
+                opp.changeAnimation(animationX, animationY, animationWidth, animationHeight);
                 isFound = true;
             }
         }

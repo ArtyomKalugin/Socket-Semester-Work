@@ -30,8 +30,8 @@ public class Opp extends Rectangle {
         return name;
     }
 
-    public void changeAnimation(int x, int y) {
-        gamerAnimation.setParameters(x, y);
+    public void changeAnimation(int x, int y, int width, int height) {
+        gamerAnimation.setParameters(x, y, width, height);
     }
 
     public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {

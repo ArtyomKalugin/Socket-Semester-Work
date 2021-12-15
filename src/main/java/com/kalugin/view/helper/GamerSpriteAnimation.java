@@ -125,15 +125,23 @@ public class GamerSpriteAnimation extends Transition {
         imageView.setViewport(new Rectangle2D(x, y, width, height));
     }
 
-    public void setParameters(int x, int y) {
-        imageView.setViewport(new Rectangle2D(x, y, width, height));
+    public synchronized void setParameters(int x, int y, int spriteWidth, int spriteHeight) {
+        imageView.setViewport(new Rectangle2D(x, y, spriteWidth, spriteHeight));
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
+    }
+
+    public synchronized int getWidth() {
+        return width;
+    }
+
+    public synchronized int getHeight() {
+        return height;
     }
 }

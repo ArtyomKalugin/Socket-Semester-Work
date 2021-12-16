@@ -38,30 +38,32 @@ public class WinMenu {
     };
 
     private void configure() {
-        pane = new AnchorPane();
-        vBox = new VBox(15);
-        Font font = Font.font("Courier New", FontWeight.BOLD, 20);
+        javafx.application.Platform.runLater(() -> {
+            pane = new AnchorPane();
+            vBox = new VBox(15);
+            Font font = Font.font("Courier New", FontWeight.BOLD, 20);
 
-        closeApp = new Button("Close app");
-        closeApp.setOnAction(closeAppEvent);
-        closeApp.setMaxWidth(500);
-        closeApp.setMaxHeight(500);
-        closeApp.setFont(font);
+            closeApp = new Button("Close app");
+            closeApp.setOnAction(closeAppEvent);
+            closeApp.setMaxWidth(500);
+            closeApp.setMaxHeight(500);
+            closeApp.setFont(font);
 
-        Label winnerLabel = new Label(winner + "is winner!");
-        winnerLabel.setFont(font);
-        winnerLabel.setTextFill(Color.GREEN);
+            Label winnerLabel = new Label(winner + "is winner!");
+            winnerLabel.setFont(font);
+            winnerLabel.setTextFill(Color.GREEN);
 
-        vBox.getChildren().add(winnerLabel);
-        vBox.getChildren().add(closeApp);
+            vBox.getChildren().add(winnerLabel);
+            vBox.getChildren().add(closeApp);
 
-        AnchorPane.setTopAnchor(vBox, 5.0);
-        AnchorPane.setLeftAnchor(vBox, 10.0);
-        AnchorPane.setRightAnchor(vBox, 10.0);
-        pane.getChildren().add(vBox);
+            AnchorPane.setTopAnchor(vBox, 5.0);
+            AnchorPane.setLeftAnchor(vBox, 10.0);
+            AnchorPane.setRightAnchor(vBox, 10.0);
+            pane.getChildren().add(vBox);
 
-        Scene scene = new Scene(pane, 300, 200);
-        stage.setScene(scene);
-        stage.show();
+            Scene scene = new Scene(pane, 300, 100);
+            stage.setScene(scene);
+            stage.show();
+        });
     }
 }

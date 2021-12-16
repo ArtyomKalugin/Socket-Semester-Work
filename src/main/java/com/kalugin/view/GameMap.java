@@ -158,17 +158,33 @@ public class GameMap {
 
     }
 
-    public void deleteOpp(String oppName) {
+    public synchronized void deleteOpp(String oppName) {
         javafx.application.Platform.runLater(() -> {
+            CopyOnWriteArrayList<Opp> oppsToDelete = new CopyOnWriteArrayList<>();
+
             for (Opp opp : opps) {
                 if (opp.getName().equals(oppName)) {
                     opp.stopRendering();
                     pane.getChildren().remove(opp);
-                    opps.remove(opp);
-                    break;
+                    oppsToDelete.add(opp);
                 }
             }
+
+            opps.removeAll(oppsToDelete);
         });
+
+        checkOpps();
+    }
+
+    private void checkOpps() {
+        if (opps.size() == 0) {
+            gameClient.sendMessage("win " + gamers.get(0).getName() + "\n");
+            showWinMenu(gamers.get(0).getName());
+        }
+    }
+
+    public void showWinMenu(String winnerName) {
+        WinMenu winMenu = new WinMenu(stage, winnerName);
     }
 
     public void deleteGamer(Gamer gamer) {

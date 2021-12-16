@@ -75,6 +75,10 @@ public class GameClientThread implements Runnable{
                     if (directions[0].equals("dead")) {
                         map.deleteOpp(directions[1]);
                     }
+
+                    if (directions[0].equals("win")) {
+                        map.showWinMenu(directions[1]);
+                    }
                 }
             }
         } catch (IOException e) {

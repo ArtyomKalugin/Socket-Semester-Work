@@ -42,7 +42,7 @@ public class GameMap {
         Text nameLabel = new Text(0, -10, name);
         nameLabel.setFont(font);
         hpLabel.setFont(font);
-        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
+        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel, true);
 
         Image backgroundImg = new Image(new File("src/main/resources/background.png").toURI().toString());
         ImageView backgroundIV = new ImageView(backgroundImg);
@@ -72,14 +72,11 @@ public class GameMap {
     }
 
     private void configureSinglePlayer() throws IOException {
-        gameClient = new GameClient();
-        gameClient.start();
-
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, name);
         nameLabel.setFont(font);
         hpLabel.setFont(font);
-        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel);
+        Gamer gamer = new Gamer(0, 0, 30, 94, hpLabel, nameLabel, false);
 
         Text hpLabel2 = new Text(0, -5, "100");
         Text botNameLabel = new Text(0, -10, "Bot");

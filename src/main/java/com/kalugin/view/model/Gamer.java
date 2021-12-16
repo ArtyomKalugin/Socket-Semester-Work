@@ -32,8 +32,9 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;
     private int fallDamage = 0;
+    private boolean isMultiPlayer;
 
-    public Gamer(double x, double y, double width, double height, Text hpLabel, Text nameLabel) {
+    public Gamer(double x, double y, double width, double height, Text hpLabel, Text nameLabel, boolean isMultiPlayer) {
         super(x, y, width, height);
         this.height = height;
         this.width = width;
@@ -47,6 +48,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         this.hpLabel = hpLabel;
         isFallen = false;
         this.nameLabel = nameLabel;
+        this.isMultiPlayer = isMultiPlayer;
 
         setFill(Color.TRANSPARENT);
 
@@ -89,7 +91,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 nameLabel.setX(getX());
                 nameLabel.setY(getY() - 20);
 
-                if (!isDead) {
+                if (!isDead && isMultiPlayer) {
                     String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
                             gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
                             gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
@@ -246,7 +248,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     nameLabel.setX(getX());
                     nameLabel.setY(getY() - 20);
 
-                    if (!isDead) {
+                    if (!isDead && isMultiPlayer) {
                         String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
                                 gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
                                 gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
@@ -294,7 +296,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        if (!isDead) {
+        if (!isDead && isMultiPlayer) {
             String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
                     gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
                     gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
@@ -337,7 +339,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        if (!isDead) {
+        if (!isDead && isMultiPlayer) {
             String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
                     gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
                     gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
@@ -354,8 +356,12 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         });
 
         if(hp <= 0) {
-            if (!isDead) {
+            if (!isDead && isMultiPlayer) {
                 map.getGameClient().sendMessage("dead " + nameLabel.getText() + "\n");
+            }
+
+            if (!isMultiPlayer) {
+                map.showWinMenu("Bot");
             }
 
             javafx.application.Platform.runLater(() -> {
@@ -378,14 +384,14 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
                 bullet = new Bullet(getX() + width + 1, getY() + 30, true, this);
 
-                if (!isDead) {
+                if (!isDead && isMultiPlayer) {
                     map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " right " + bullet.getDamage() +
                             " " + bullet.getX() + " " + bullet.getY() + "\n");
                 }
             } else {
                 bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, this);
 
-                if (!isDead) {
+                if (!isDead && isMultiPlayer) {
                     map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " left " + bullet.getDamage() +
                             " " + bullet.getX() + " " + bullet.getY() + "\n");
                 }

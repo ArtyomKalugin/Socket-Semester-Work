@@ -1,6 +1,6 @@
 package com.kalugin.view.model;
 
-import com.kalugin.view.GameMap;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -49,7 +49,7 @@ public class WinMenu {
             closeApp.setMaxHeight(500);
             closeApp.setFont(font);
 
-            Label winnerLabel = new Label(winner + "is winner!");
+            Label winnerLabel = new Label(winner + " is winner!");
             winnerLabel.setFont(font);
             winnerLabel.setTextFill(Color.GREEN);
 

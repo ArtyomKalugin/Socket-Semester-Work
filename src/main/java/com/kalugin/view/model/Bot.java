@@ -114,6 +114,8 @@ public class Bot extends Rectangle {
         shoot();
 
         if(hp <= 0) {
+            map.showWinMenu(map.getGamers().get(0).getName());
+
             map.deleteBot(this);
             hpLabel.setText("");
             nameLabel.setText("");

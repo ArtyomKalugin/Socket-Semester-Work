@@ -158,7 +158,7 @@ public class GameMap {
 
     }
 
-    public synchronized void deleteOpp(String oppName) {
+    public void deleteOpp(String oppName) {
         javafx.application.Platform.runLater(() -> {
             CopyOnWriteArrayList<Opp> oppsToDelete = new CopyOnWriteArrayList<>();
 
@@ -171,9 +171,8 @@ public class GameMap {
             }
 
             opps.removeAll(oppsToDelete);
+            checkOpps();
         });
-
-        checkOpps();
     }
 
     private void checkOpps() {

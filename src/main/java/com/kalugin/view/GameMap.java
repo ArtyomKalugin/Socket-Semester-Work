@@ -151,13 +151,33 @@ public class GameMap {
     }
 
     public void deleteBot(Bot bot) {
-        pane.getChildren().remove(bot);
-        bots.remove(bot);
+        javafx.application.Platform.runLater(() -> {
+            pane.getChildren().remove(bot);
+            bots.remove(bot);
+        });
+
+    }
+
+    public void deleteOpp(String oppName) {
+        javafx.application.Platform.runLater(() -> {
+            Opp oppToDelete = null;
+
+            for (Opp opp : opps) {
+                if (opp.getName().equals(oppName)) {
+                    oppToDelete = opp;
+                }
+            }
+
+            pane.getChildren().remove(oppToDelete);
+            opps.remove(oppToDelete);
+        });
     }
 
     public void deleteGamer(Gamer gamer) {
-        pane.getChildren().remove(gamer);
-        gamers.remove(gamer);
+        javafx.application.Platform.runLater(() -> {
+            pane.getChildren().remove(gamer);
+            gamers.remove(gamer);
+        });
     }
 
     public static GameMap getInstance() {

@@ -52,7 +52,7 @@ public class GameClientThread implements Runnable{
                         int animationOffsetX = Integer.parseInt(directions[8]);
                         int animationOffsetY = Integer.parseInt(directions[9]);
 
-                        double hp = Double.parseDouble(directions[10])
+                        double hp = Double.parseDouble(directions[10]);
 
                         map.moveOpp(directions[1], x, y, animationIndex, animationColumns, animationWidth, animationHeight,
                                 animationOffsetX, animationOffsetY, hp);
@@ -70,6 +70,10 @@ public class GameClientThread implements Runnable{
                         double y = Double.parseDouble(directions[5]);
 
                         map.createBullet(isRight, damage, x, y);
+                    }
+
+                    if (directions[0].equals("dead")) {
+                        map.deleteOpp(directions[1]);
                     }
                 }
             }

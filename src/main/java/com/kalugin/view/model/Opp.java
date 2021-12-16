@@ -56,20 +56,16 @@ public class Opp extends Rectangle {
         nameLabel.setY(y - 20);
     }
 
-    public synchronized void getDamage(double damage) {
-        hp -= damage;
-
-        javafx.application.Platform.runLater(() -> {
-            hpLabel.setText(String.valueOf(hp));
-        });
-
+    private synchronized void checkHp() {
         if(hp <= 0) {
             javafx.application.Platform.runLater(() -> {
 //                map.deleteGamer(this);
-//            isDead = true;
+                map.getGameClient().sendMessage("dead " + name);
+
                 hpLabel.setText("");
                 nameLabel.setText("");
-//            map.getPane().getChildren().remove(nameLabel);
+                map.getPane().getChildren().remove(nameLabel);
+                map.getPane().getChildren().remove(hpLabel);
                 gamerAnimation.delete();
             });
         }

@@ -352,6 +352,7 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 hpLabel.setText("");
                 nameLabel.setText("");
                 map.getPane().getChildren().remove(nameLabel);
+                map.getPane().getChildren().remove(hpLabel);
                 gamerAnimation.delete();
             });
         }

@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class GameFxApp extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Menu menu = new Menu(stage);
+    public void start(Stage stage) {
+        new Menu(stage);
     }
 }

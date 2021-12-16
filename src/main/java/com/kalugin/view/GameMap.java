@@ -21,12 +21,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GameMap {
     private static final int stageWidth = 1450;
     private static final int stageHeight = 900;
-    private static CopyOnWriteArrayList<Platform> platforms = new CopyOnWriteArrayList<>();
-    private static CopyOnWriteArrayList<Gamer> gamers = new CopyOnWriteArrayList<>();
-    private static CopyOnWriteArrayList<Bot> bots = new CopyOnWriteArrayList<>();
-    private static CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<Platform> platforms = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<Gamer> gamers = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<Bot> bots = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<Opp> opps = new CopyOnWriteArrayList<>();
     private static final Pane pane = new Pane();
-    private static GameMap gameMap = new GameMap();
+    private static final GameMap gameMap = new GameMap();
     private static Stage stage;
     private static Scene scene;
     private static String name;
@@ -71,7 +71,7 @@ public class GameMap {
         gameClient.sendMessage(message);
     }
 
-    private void configureSinglePlayer() throws IOException {
+    private void configureSinglePlayer() {
         Text hpLabel = new Text(0, -5, "100");
         Text nameLabel = new Text(0, -10, name);
         nameLabel.setFont(font);
@@ -115,10 +115,6 @@ public class GameMap {
         return stageWidth;
     }
 
-    public int getStageHeight() {
-        return stageHeight;
-    }
-
     public List<Platform> getPlatforms() {
         return platforms;
     }
@@ -128,7 +124,7 @@ public class GameMap {
     }
 
     public void setName(String name) {
-        this.name = name;
+        GameMap.name = name;
     }
 
     public void setGamer(Gamer gamer) {
@@ -180,7 +176,7 @@ public class GameMap {
     }
 
     public void showWinMenu(String winnerName) {
-        WinMenu winMenu = new WinMenu(stage, winnerName);
+        new WinMenu(stage, winnerName);
     }
 
     public void deleteGamer(Gamer gamer) {
@@ -203,7 +199,7 @@ public class GameMap {
     }
 
     public void setStage(Stage stage) throws IOException {
-        this.stage = stage;
+        GameMap.stage = stage;
     }
 
     public void startSinglePlayer() throws IOException {
@@ -255,6 +251,7 @@ public class GameMap {
         for(Opp opp : opps) {
             if (opp.getName().equals(oppName)) {
                 isFound = true;
+                break;
             }
         }
 
@@ -309,18 +306,6 @@ public class GameMap {
         if (!isFound) {
             createNewOpp(oppName);
         }
-    }
-
-    public void setGameClient(GameClient gameClient) {
-        this.gameClient = gameClient;
-    }
-
-    public void startGameClient() throws IOException {
-        getGameClient().start();
-    }
-
-    public String getName() {
-        return name;
     }
 
     public synchronized List<Opp> getOpps() {

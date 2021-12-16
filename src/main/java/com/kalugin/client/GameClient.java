@@ -1,8 +1,5 @@
 package com.kalugin.client;
 
-import com.kalugin.view.GameMap;
-import com.kalugin.client.GameClientThread;
-
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 public class GameClient {
     private Socket socket;
     private GameClientThread gameThread;
-    private final GameMap map = GameMap.getInstance();
 
     public void sendMessage(String message) {
         try {

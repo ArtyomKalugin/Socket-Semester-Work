@@ -25,12 +25,12 @@ public class GamerSpriteAnimation extends Transition {
 
     public GamerSpriteAnimation(int count, int columns, int offsetX, int offsetY, int width,
                                 int height, Duration duration) {
-        this.count = count;
-        this.columns = columns;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.width = width;
-        this.height = height;
+        GamerSpriteAnimation.count = count;
+        GamerSpriteAnimation.columns = columns;
+        GamerSpriteAnimation.offsetX = offsetX;
+        GamerSpriteAnimation.offsetY = offsetY;
+        GamerSpriteAnimation.width = width;
+        GamerSpriteAnimation.height = height;
         setCycleDuration(duration);
         setCycleCount(Animation.INDEFINITE);
         setInterpolator(Interpolator.LINEAR);
@@ -41,9 +41,7 @@ public class GamerSpriteAnimation extends Transition {
         imageView.setY(0);
         imageView.setX(0);
 
-        javafx.application.Platform.runLater(() -> {
-            map.getPane().getChildren().add(imageView);
-        });
+        javafx.application.Platform.runLater(() -> map.getPane().getChildren().add(imageView));
     }
 
     public void changeTurnToRight() {
@@ -67,9 +65,7 @@ public class GamerSpriteAnimation extends Transition {
     }
 
     public synchronized void delete() {
-        javafx.application.Platform.runLater(() -> {
-            map.getPane().getChildren().remove(imageView);
-        });
+        javafx.application.Platform.runLater(() -> map.getPane().getChildren().remove(imageView));
     }
 
     public void changeTurnToFall(NodeOrientation orientation) {

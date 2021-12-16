@@ -19,7 +19,7 @@ public class Bot extends Rectangle {
     private boolean isTopCollision;
     private final GameMap map = GameMap.getInstance();
     private double hp;
-    private Text hpLabel;
+    private final Text hpLabel;
     private final Text nameLabel;
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;

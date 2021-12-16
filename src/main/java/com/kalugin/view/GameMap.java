@@ -162,6 +162,7 @@ public class GameMap {
         javafx.application.Platform.runLater(() -> {
             for (Opp opp : opps) {
                 if (opp.getName().equals(oppName)) {
+                    opp.stopRendering();
                     pane.getChildren().remove(opp);
                     opps.remove(opp);
                     break;

@@ -54,20 +54,15 @@ public class Opp extends Rectangle {
 
         nameLabel.setX(x);
         nameLabel.setY(y - 20);
-
-        checkHp();
     }
 
-    private synchronized void checkHp() {
-        if(hp <= 0) {
-            javafx.application.Platform.runLater(() -> {
-//                map.deleteGamer(this);
-                hpLabel.setText("");
-                nameLabel.setText("");
-                map.getPane().getChildren().remove(nameLabel);
-                map.getPane().getChildren().remove(hpLabel);
-                gamerAnimation.delete();
-            });
-        }
+    public synchronized void stopRendering() {
+        javafx.application.Platform.runLater(() -> {
+            hpLabel.setText("");
+            nameLabel.setText("");
+            map.getPane().getChildren().remove(nameLabel);
+            map.getPane().getChildren().remove(hpLabel);
+            gamerAnimation.delete();
+        });
     }
 }

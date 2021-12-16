@@ -354,9 +354,11 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         });
 
         if(hp <= 0) {
-            javafx.application.Platform.runLater(() -> {
-                map.getGameClient().sendMessage("dead " + nameLabel.getText());
+            if (!isDead) {
+                map.getGameClient().sendMessage("dead " + nameLabel.getText() + "\n");
+            }
 
+            javafx.application.Platform.runLater(() -> {
                 map.deleteGamer(this);
                 isDead = true;
                 hpLabel.setText("");

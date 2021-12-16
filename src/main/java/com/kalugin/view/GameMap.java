@@ -160,16 +160,13 @@ public class GameMap {
 
     public void deleteOpp(String oppName) {
         javafx.application.Platform.runLater(() -> {
-            Opp oppToDelete = null;
-
             for (Opp opp : opps) {
                 if (opp.getName().equals(oppName)) {
-                    oppToDelete = opp;
+                    pane.getChildren().remove(opp);
+                    opps.remove(opp);
+                    break;
                 }
             }
-
-            pane.getChildren().remove(oppToDelete);
-            opps.remove(oppToDelete);
         });
     }
 

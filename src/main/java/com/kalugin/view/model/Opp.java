@@ -54,14 +54,14 @@ public class Opp extends Rectangle {
 
         nameLabel.setX(x);
         nameLabel.setY(y - 20);
+
+        checkHp();
     }
 
     private synchronized void checkHp() {
         if(hp <= 0) {
             javafx.application.Platform.runLater(() -> {
 //                map.deleteGamer(this);
-                map.getGameClient().sendMessage("dead " + name);
-
                 hpLabel.setText("");
                 nameLabel.setText("");
                 map.getPane().getChildren().remove(nameLabel);

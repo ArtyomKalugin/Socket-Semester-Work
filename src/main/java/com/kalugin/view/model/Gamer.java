@@ -89,12 +89,14 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 nameLabel.setX(getX());
                 nameLabel.setY(getY() - 20);
 
+                if (!isDead) {
+                    String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
+                            gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
+                            gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
+                            gamerAnimation.getOffsetY() + " " + hp + "\n";
+                    map.getGameClient().sendMessage(message);
+                }
 
-                String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                        gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
-                        gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
-                        gamerAnimation.getOffsetY() + " " + hp + "\n";
-                map.getGameClient().sendMessage(message);
             }
         };
         animationTimer.start();
@@ -244,11 +246,13 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                     nameLabel.setX(getX());
                     nameLabel.setY(getY() - 20);
 
-                    String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                            gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
-                            gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
-                            gamerAnimation.getOffsetY() + " " + hp + "\n";
-                    map.getGameClient().sendMessage(message);
+                    if (!isDead) {
+                        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
+                                gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
+                                gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
+                                gamerAnimation.getOffsetY() + " " + hp + "\n";
+                        map.getGameClient().sendMessage(message);
+                    }
                 }
             };
 
@@ -290,11 +294,13 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
-                gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
-                gamerAnimation.getOffsetY() + " " + hp + "\n";
-        map.getGameClient().sendMessage(message);
+        if (!isDead) {
+            String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
+                    gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
+                    gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
+                    gamerAnimation.getOffsetY() + " " + hp + "\n";
+            map.getGameClient().sendMessage(message);
+        }
     }
 
     private void moveToRight() {
@@ -331,11 +337,13 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         nameLabel.setX(getX());
         nameLabel.setY(getY() - 20);
 
-        String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
-                gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
-                gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
-                gamerAnimation.getOffsetY() + " " + hp + "\n";
-        map.getGameClient().sendMessage(message);
+        if (!isDead) {
+            String message = "move " + nameLabel.getText() + " " + getX() + " " + getY() + " " +
+                    gamerAnimation.getIndex() + " " + gamerAnimation.getColumns() + " " + gamerAnimation.getWidth() + " " +
+                    gamerAnimation.getHeight() + " " + gamerAnimation.getOffsetX() + " " +
+                    gamerAnimation.getOffsetY() + " " + hp + "\n";
+            map.getGameClient().sendMessage(message);
+        }
     }
 
     public synchronized void getDamage(double damage) {
@@ -365,12 +373,18 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
 
             if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
                 bullet = new Bullet(getX() + width + 1, getY() + 30, true, this);
-                map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " right " + bullet.getDamage() +
-                        " " + bullet.getX() + " " + bullet.getY() + "\n");
+
+                if (!isDead) {
+                    map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " right " + bullet.getDamage() +
+                            " " + bullet.getX() + " " + bullet.getY() + "\n");
+                }
             } else {
                 bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, this);
-                map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " left " + bullet.getDamage() +
-                        " " + bullet.getX() + " " + bullet.getY() + "\n");
+
+                if (!isDead) {
+                    map.getGameClient().sendMessage("shoot " + nameLabel.getText() + " left " + bullet.getDamage() +
+                            " " + bullet.getX() + " " + bullet.getY() + "\n");
+                }
             }
             map.getPane().getChildren().add(bullet);
         }

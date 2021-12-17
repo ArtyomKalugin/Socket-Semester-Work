@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import java.util.Random;
+
 
 public class Bot extends Rectangle {
     private final double width;
@@ -19,11 +21,15 @@ public class Bot extends Rectangle {
     private boolean isTopCollision;
     private final GameMap map = GameMap.getInstance();
     private double hp;
+    private double gravity = 0;
+    private final int step = 10;
     private final Text hpLabel;
     private final Text nameLabel;
     private GamerSpriteAnimation gamerAnimation;
     private boolean isFallen;
-    private int fallDamage = 0;
+    private boolean isDead;
+    private boolean isMoving;
+    private boolean isJumping;
 
     public Bot(double x, double y, double width, double height, Text hpLabel, Text nameLabel) {
         super(x, y, width, height);
@@ -36,6 +42,9 @@ public class Bot extends Rectangle {
         this.hpLabel = hpLabel;
         isFallen = false;
         this.nameLabel = nameLabel;
+        isDead = false;
+        isMoving = false;
+        isJumping = false;
 
         setFill(Color.TRANSPARENT);
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -53,7 +62,6 @@ public class Bot extends Rectangle {
                     }
 
                     setY(getY() + 15);
-                    fallDamage++;
                     gamerAnimation.setX(getX());
                     gamerAnimation.setY(getY());
                 }
@@ -67,8 +75,6 @@ public class Bot extends Rectangle {
                         if(isFallen) {
                             isFallen = false;
                             gamerAnimation.stopAnimation(getNodeOrientation());
-                            getDamage(fallDamage / 10);
-                            fallDamage = 0;
                         }
                     }
                 }
@@ -78,6 +84,27 @@ public class Bot extends Rectangle {
 
                 nameLabel.setX(getX());
                 nameLabel.setY(getY() - 20);
+
+                Random rn = new Random();
+                int action = rn.nextInt(50);
+
+                if (action == 0 && !isDead) {
+                    isMoving = true;
+                    moveToRight();
+                }
+
+                if (action == 1 && !isDead) {
+                    isMoving = true;
+                    moveToLeft();
+                }
+
+                if (action == 2 && !isDead) {
+                    shoot();
+                }
+
+                if (action == 3 && !isDead) {
+                    jump();
+                }
             }
         };
         animationTimer.start();
@@ -87,9 +114,9 @@ public class Bot extends Rectangle {
         Bullet bullet;
 
         if(getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)) {
-            bullet = new Bullet(getX() + width + 1, getY() + 30, true, null);
+            bullet = new Bullet(getX() + width + 10, getY() + 30, true, null);
         } else {
-            bullet = new Bullet(getX() - 30 - 1, getY() + 30, false, null);
+            bullet = new Bullet(getX() - 30 - 10, getY() + 30, false, null);
         }
         map.getPane().getChildren().add(bullet);
 
@@ -114,13 +141,13 @@ public class Bot extends Rectangle {
         shoot();
 
         if(hp <= 0) {
-            map.showWinMenu(map.getGamers().get(0).getName());
-
             map.deleteBot(this);
             hpLabel.setText("");
             nameLabel.setText("");
             map.getPane().getChildren().remove(nameLabel);
             gamerAnimation.delete();
+            isDead = true;
+            map.showWinMenu(map.getGamers().get(0).getName());
         }
     }
 
@@ -150,6 +177,86 @@ public class Bot extends Rectangle {
         }
     }
 
+    private void jump() {
+        if (gravity == 0) {
+            double previousY = this.getY();
+            gamerAnimation.changeTurnToFall(getNodeOrientation());
+            gamerAnimation.play();
+
+            AnimationTimer jumpTimer = new AnimationTimer() {
+                @Override
+                public void handle(long l) {
+                    checkBottomCollision();
+                    if (isBottomCollision && gravity == 0) {
+                        isJumping = true;
+                    } else if (!isBottomCollision && gravity == 0) {
+                        isJumping = false;
+                    }
+
+                    if (isJumping) {
+                        setY(getY() - 33 + gravity);
+                        gravity += 1;
+                        gamerAnimation.setY(getY());
+                    }
+
+                    Platform platform = getBottomCollisionPlatform();
+                    checkTopCollision();
+                    if (isTopCollision) {
+                        if (15 > gravity) {
+                            gravity += 15 - gravity;
+                        }
+                    }
+
+                    checkBottomCollision();
+                    if (isBottomCollision) {
+                        this.stop();
+                        gravity = 0;
+                        isJumping = false;
+                        gamerAnimation.stopAnimation(getNodeOrientation());
+
+                        if (platform != null) {
+                            setY(platform.getY() - getHeight());
+                        }
+                    }
+
+                    if (previousY <= getY()) {
+                        this.stop();
+                        gamerAnimation.stopAnimation(getNodeOrientation());
+                        gravity = 0;
+                        isJumping = false;
+                    }
+
+                    checkRightCollision();
+                    if (getNodeOrientation().equals(NodeOrientation.LEFT_TO_RIGHT)
+                            && isMoving) {
+                        if (((getX() + width) <= map.getStageWidth()) && !isRightCollision) {
+                            setX(getX() + step - 4);
+                            gamerAnimation.setX(getX());
+                        }
+                    }
+
+                    checkLeftCollision();
+                    if (getNodeOrientation().equals(NodeOrientation.RIGHT_TO_LEFT)
+                            && isMoving) {
+                        if (((getX() - step) >= 0) && !isLeftCollision) {
+                            setX(getX() - step + 4);
+                            gamerAnimation.setX(getX());
+                        }
+                    }
+
+                    hpLabel.setX(getX());
+                    hpLabel.setY(getY() - 5);
+
+                    nameLabel.setX(getX());
+                    nameLabel.setY(getY() - 20);
+
+                }
+            };
+
+            jumpTimer.start();
+        }
+    }
+
     private void checkTopCollision() {
         BoundingBox topBox = new BoundingBox(this.getX(), this.getY() - 0.1,
                 width, 0.1);
@@ -176,6 +283,82 @@ public class Bot extends Rectangle {
         }
 
         return null;
+    }
+
+    private void moveToLeft() {
+        final int[] distance = {0};
+        gamerAnimation.changeTurnToLeft();
+        gamerAnimation.play();
+
+        AnimationTimer move = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                if(distance[0] <= step) {
+                    checkLeftCollision();
+
+                    if(((getX() - step) >= 0) && !isLeftCollision){
+                        setX(getX() - 1);
+                        gamerAnimation.setX(getX());
+                        gamerAnimation.setY(getY());
+                        setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    } else {
+                        stop();
+                    }
+                } else {
+                    stop();
+                }
+
+                distance[0] += 1;
+            }
+        };
+
+        move.start();
+        hpLabel.setX(getX());
+        hpLabel.setY(getY() - 5);
+
+        nameLabel.setX(getX());
+        nameLabel.setY(getY() - 20);
+
+        isMoving = false;
+        gamerAnimation.stopAnimation(getNodeOrientation());
+    }
+
+    private void moveToRight() {
+        final int[] distance = {0};
+        gamerAnimation.changeTurnToRight();
+        gamerAnimation.play();
+
+        AnimationTimer move = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                if(distance[0] <= step) {
+                    checkRightCollision();
+
+                    if(((getX() + width) <= map.getStageWidth()) && !isRightCollision){
+                        setX(getX() + 1);
+                        gamerAnimation.setX(getX());
+                        gamerAnimation.setY(getY());
+                        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                    } else {
+                        stop();
+                    }
+                } else {
+                    stop();
+                }
+
+                distance[0] += 1;
+            }
+        };
+
+        move.start();
+        hpLabel.setX(getX());
+        hpLabel.setY(getY() - 5);
+
+        nameLabel.setX(getX());
+        nameLabel.setY(getY() - 20);
+
+        isMoving = false;
+        gamerAnimation.stopAnimation(getNodeOrientation());
     }
 
     public void setGamerAnimation(GamerSpriteAnimation gamerAnimation) {

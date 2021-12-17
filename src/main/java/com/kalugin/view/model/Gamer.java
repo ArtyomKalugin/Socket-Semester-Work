@@ -356,14 +356,6 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
         });
 
         if(hp <= 0) {
-            if (!isDead && isMultiPlayer) {
-                map.getGameClient().sendMessage("dead " + nameLabel.getText() + "\n");
-            }
-
-            if (!isMultiPlayer) {
-                map.showWinMenu("Bot");
-            }
-
             javafx.application.Platform.runLater(() -> {
                 map.deleteGamer(this);
                 isDead = true;
@@ -373,6 +365,14 @@ public class Gamer extends Rectangle implements EventHandler<KeyEvent> {
                 map.getPane().getChildren().remove(hpLabel);
                 gamerAnimation.delete();
             });
+
+            if (!isDead && isMultiPlayer) {
+                map.getGameClient().sendMessage("dead " + nameLabel.getText() + "\n");
+            }
+
+            if (!isMultiPlayer) {
+                map.showWinMenu("Bot");
+            }
         }
     }
 

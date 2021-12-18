@@ -7,10 +7,9 @@ import java.net.SocketException;
 
 public class GameServerThread implements Runnable {
     private final BufferedReader input;
-
     private final BufferedWriter output;
-
     private final GameServer server;
+    private boolean isWorking = true;
 
     public GameServerThread(BufferedReader input, BufferedWriter output, GameServer server) {
         this.input = input;
@@ -30,11 +29,14 @@ public class GameServerThread implements Runnable {
         return server;
     }
 
+    public void stop() {
+        isWorking = false;
+    }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (isWorking) {
                 String message = input.readLine();
                 server.sendMessage(message, this);
             }

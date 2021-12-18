@@ -11,12 +11,13 @@ public class GameServer {
     private static final int PORT = 5555;
     private ServerSocket socket;
     private final List<GameServerThread> clients = new ArrayList<>();
-
+    private String message = "";
+    private boolean isWorking = true;
 
     public void start() throws IOException {
         socket = new ServerSocket(PORT);
 
-        while (true) {
+        while (isWorking) {
             Socket clientSocket = socket.accept();
 
             BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
@@ -31,6 +32,8 @@ public class GameServer {
     }
 
     public void sendMessage(String message, GameServerThread sender) throws IOException {
+        this.message = message;
+
         for (GameServerThread client : clients) {
             if (client.equals(sender)){
                 continue;
@@ -48,5 +51,17 @@ public class GameServer {
     public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
         gameServer.start();
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void stop() {
+        for (GameServerThread gameServerThread : clients) {
+            gameServerThread.stop();
+        }
+
+        isWorking = false;
     }
 }

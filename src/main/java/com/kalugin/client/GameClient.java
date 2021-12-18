@@ -8,13 +8,23 @@ public class GameClient {
     private Socket socket;
     private GameClientThread gameThread;
 
-    public void sendMessage(String message) {
+    public void stop() {
+        gameThread.stop();
+    }
+
+    public boolean sendMessage(String message) {
+        boolean isSuccessful = false;
+
         try {
             gameThread.getOutput().write(message);
             gameThread.getOutput().flush();
+
+            isSuccessful = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return isSuccessful;
     }
 
     public void start() throws IOException {

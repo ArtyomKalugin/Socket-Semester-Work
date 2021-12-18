@@ -11,6 +11,7 @@ public class GameClientThread implements Runnable{
     private final BufferedWriter output;
     private final GameClient client;
     private final GameMap map = GameMap.getInstance();
+    private boolean isWorking = true;
 
     public GameClientThread(BufferedReader input, BufferedWriter output, GameClient client) {
         this.input = input;
@@ -26,10 +27,14 @@ public class GameClientThread implements Runnable{
         return output;
     }
 
+    public void stop() {
+        isWorking = false;
+    }
+
     @Override
     public void run() {
         try {
-            while (true) {
+            while (isWorking) {
                 String message = input.readLine();
 
                 if(message != null) {
